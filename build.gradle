@@ -11,9 +11,18 @@ buildscript {
     }
 }
 
+repositories {
+    mavenLocal()
+    flatDir {
+        name "fileRepo"
+        dirs "repo"
+    }
+}
+configurations { deployJars }
+
 apply plugin: 'forge'
 
-version = "1.6.4-3.0"
+version = "1.6.4-3.0." + System.getProperty("BUILD_NUMBER", "0")
 group= "net.minecraftforge.lex"
 archivesBaseName = "YUNoMakeGoodMap"
 
@@ -34,5 +43,65 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+artifacts { archives jar }
+
+uploadArchives {
+    repositories {
+        add getProject().repositories.mavenLocal()
+    }
+    repositories.mavenDeployer {
+        configuration = configurations.deployJars
+
+        if (project.hasProperty("filesmaven")) {
+            logger.info('Publishing to files server')
+            repository(url: project.filesmaven.url) {
+                authentication(userName: project.filesmaven.username, privateKey: project.filesmaven.key)
+            }
+        } else {
+            logger.info('Publishing to repo folder')
+            repository(url: 'file://localhost/' + project.file('repo').getAbsolutePath())
+        }
+
+        pom {
+            groupId = project.group
+            version = project.version
+            artifactId = project.archivesBaseName
+        }
+        pom.project {
+            name project.archivesBaseName
+            packaging 'jar'
+            description 'Simple void world mod for Minecraft.'
+            url 'https://github.com/LexManos/YUNoMakeGoodMap'
+
+            scm {
+                url 'https://github.com/LexManos/YUNoMakeGoodMap'
+                connection 'scm:git:git://github.com/LexManos/YUNoMakeGoodMape.git'
+                developerConnection 'scm:git:git@github.com:LexManos/YUNoMakeGoodMap.git'
+            }
+
+            issueManagement {
+                system 'github'
+                url 'https://github.com/LexManos/YUNoMakeGoodMap/issues'
+            }
+
+            licenses {
+                license {
+                    name 'Apache License version 2.0'
+                    url 'https://github.com/LexManos/YUNoMakeGoodMap/blob/master/LICENSE'
+                    distribution 'repo'
+                }
+            }
+
+            developers {
+                developer {
+                    id 'LexManos'
+                    name 'Lex Manos'
+                    roles { role 'developer' }
+                }
+            }
+        }
     }
 }
