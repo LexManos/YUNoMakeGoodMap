@@ -30,6 +30,7 @@ public class YUNoMakeGoodMap
     private boolean overrideDefault = false;
     private String platformType = "grass";
     private boolean generateSpikes = false;
+    private boolean generateNetherFortress = false;
     
     @EventHandler
     public void preinit(FMLPreInitializationEvent event)
@@ -64,6 +65,10 @@ public class YUNoMakeGoodMap
         prop = config.get(CATEGORY_GENERAL, "generateSpikes", generateSpikes);
         prop.comment = "Set to true to enable generation of the obsidian 'spikes' in the end.";
         generateSpikes = prop.getBoolean(generateSpikes);
+        
+        prop = config.get(CATEGORY_GENERAL, "generateNetherFortress", generateNetherFortress);
+        prop.comment = "Set to true to enable generation of the nether fortresses.";
+        generateNetherFortress = prop.getBoolean(generateNetherFortress);
 
 
         if (config.hasChanged())
@@ -110,5 +115,10 @@ public class YUNoMakeGoodMap
     public boolean shouldGenerateSpikes(World world)
     {
         return generateSpikes;
+    }
+
+    public boolean shouldGenerateNetherFortress(World world)
+    {
+        return generateNetherFortress;
     }
 }

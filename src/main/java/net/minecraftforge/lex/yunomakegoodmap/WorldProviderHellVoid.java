@@ -27,11 +27,21 @@ public class WorldProviderHellVoid extends WorldProviderHell
         }
 
         @Override public Chunk loadChunk(int x, int z){ return this.provideChunk(x, z); }
-        @Override public void populate(IChunkProvider provider, int x, int z){}
+        @Override
+        public void populate(IChunkProvider provider, int x, int z)
+        {
+            if (YUNoMakeGoodMap.instance.shouldGenerateNetherFortress(world))
+                genNetherBridge.generateStructuresInChunk(world, world.rand, x, z);
+        }
 
         @Override public Chunk provideChunk(int x, int z)
         {
-            Chunk ret = new Chunk(world, new byte[32768], x, z);
+            byte[] data =  new byte[32768];
+
+            if (YUNoMakeGoodMap.instance.shouldGenerateNetherFortress(world))
+                genNetherBridge.generate(this, world, x, z, data);
+
+            Chunk ret = new Chunk(world, data, x, z);
             BiomeGenBase[] biomes = world.getWorldChunkManager().loadBlockGeneratorData(null, x * 16, z * 16, 16, 16);
             byte[] ids = ret.getBiomeArray();
 
