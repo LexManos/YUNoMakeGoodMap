@@ -5,6 +5,10 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
@@ -22,12 +26,18 @@ configurations { deployJars }
 
 apply plugin: 'forge'
 
-version = "1.6.4-3.0." + System.getProperty("BUILD_NUMBER", "0")
+version = "1.6.4-3.0.0"
 group= "net.minecraftforge.lex"
 archivesBaseName = "YUNoMakeGoodMap"
+ext.build_number = "${System.getenv().BUILD_NUMBER}"
+logger.lifecycle "Build: " + build_number
+if (build_number.toString().equals('null')) build_number = '0'
+logger.lifecycle "Build: " + build_number
+version += '.' + build_number
 
 minecraft {
 	version = "1.6.4-9.11.1.964"
+    assetDir = 'run/assets'
 }
 
 processResources
@@ -46,9 +56,13 @@ processResources
     }
 }
 
-artifacts { archives jar }
+jar
+{
+    classifier = 'universal'
+}
 
 uploadArchives {
+    dependsOn reobf // This is important it is needed to actually cause reobf to run!
     repositories {
         add getProject().repositories.mavenLocal()
     }
