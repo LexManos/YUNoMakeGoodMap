@@ -1,17 +1,23 @@
 package net.minecraftforge.lex.yunomakegoodmap;
 
+import static net.minecraftforge.common.Configuration.CATEGORY_GENERAL;
+
+import java.io.File;
 import java.util.Hashtable;
 import java.util.logging.Level;
 
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldType;
+import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.Property;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
@@ -21,10 +27,44 @@ public class YUNoMakeGoodMap
     @Instance("YUNoMakeGoodMap")
     public static YUNoMakeGoodMap instance;
     private VoidWorldType worldType;
+    private boolean overrideDefault = false;
     
+    @EventHandler
+    public void preinit(FMLPreInitializationEvent event)
+    {
+        Configuration config = null;
+        File cfgFile = event.getSuggestedConfigurationFile();
+        try
+        {
+            config = new Configuration(cfgFile);
+        }
+        catch (Exception e)
+        {
+            FMLLog.severe("[YUNoMakeGoodMap] Error loading config, deleting file and resetting: ");
+            e.printStackTrace();
+
+            if (cfgFile.exists())
+                cfgFile.delete();
+
+            config = new Configuration(cfgFile);
+        }
+
+        Property prop;
+
+        prop = config.get(CATEGORY_GENERAL, "overrideDefault", overrideDefault);
+        prop.comment = "Set to true to force the default world types to be void world. Use with caution.";
+        overrideDefault = prop.getBoolean(overrideDefault);
+
+        if (config.hasChanged())
+        {
+            config.save();
+        }
+    }
+
     @EventHandler
     public void load(FMLInitializationEvent event) 
     {
+        
         FMLLog.log(Level.INFO, "YUNoMakeGoodMap Initalized");
         LanguageRegistry.instance().addStringLocalization("generator.void", "Void World");
 
@@ -40,11 +80,12 @@ public class YUNoMakeGoodMap
 
         Hashtable<Integer, Class<? extends WorldProvider>> providers = ReflectionHelper.getPrivateValue(DimensionManager.class, null, "providers");
         providers.put(-1, WorldProviderHellVoid.class);
+        providers.put(0,  WorldProviderSurfaceVoid.class);
         providers.put(1,  WorldProviderEndVoid.class);
     }
 
     public boolean shouldBeVoid(World world)
     {
-        return world.getWorldInfo().getTerrainType() == worldType;
+        return overrideDefault || world.getWorldInfo().getTerrainType() == worldType;
     }
 }
