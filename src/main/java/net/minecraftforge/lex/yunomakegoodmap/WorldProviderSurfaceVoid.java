@@ -7,6 +7,14 @@ import net.minecraft.world.chunk.IChunkProvider;
 public class WorldProviderSurfaceVoid extends WorldProviderSurface
 {
     @Override
+    public boolean canCoordinateBeSpawn(int x, int z)
+    {
+        if (YUNoMakeGoodMap.instance.shouldBeVoid(worldObj))
+            return true;
+        return super.canCoordinateBeSpawn(x, z);
+    }
+
+    @Override
     public ChunkCoordinates getRandomizedSpawnPoint()
     {
         if (YUNoMakeGoodMap.instance.shouldBeVoid(worldObj))

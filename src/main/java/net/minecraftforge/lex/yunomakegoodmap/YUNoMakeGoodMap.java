@@ -28,6 +28,7 @@ public class YUNoMakeGoodMap
     public static YUNoMakeGoodMap instance;
     private VoidWorldType worldType;
     private boolean overrideDefault = false;
+    private String platformType = "grass";
     
     @EventHandler
     public void preinit(FMLPreInitializationEvent event)
@@ -54,6 +55,11 @@ public class YUNoMakeGoodMap
         prop = config.get(CATEGORY_GENERAL, "overrideDefault", overrideDefault);
         prop.comment = "Set to true to force the default world types to be void world. Use with caution.";
         overrideDefault = prop.getBoolean(overrideDefault);
+
+        prop = config.get(CATEGORY_GENERAL, "platformType", platformType);
+        prop.comment = "Set the type of platform to create in the overworld, Possible values: 'grass' A single grass block, 'tree' a small oak tree on a grass block.";
+        platformType = prop.getString();
+
 
         if (config.hasChanged())
         {
@@ -87,5 +93,12 @@ public class YUNoMakeGoodMap
     public boolean shouldBeVoid(World world)
     {
         return overrideDefault || world.getWorldInfo().getTerrainType() == worldType;
+    }
+
+    public String getPlatformType()
+    {
+        if (platformType == null) platformType = "grass";
+        if (platformType.equalsIgnoreCase("tree")) return "tree";
+        return "grass";
     }
 }
