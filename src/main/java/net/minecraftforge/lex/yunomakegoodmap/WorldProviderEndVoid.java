@@ -7,6 +7,7 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderEnd;
+import net.minecraft.world.gen.feature.WorldGenSpikes;
 
 public class WorldProviderEndVoid extends WorldProviderEnd
 {
@@ -21,6 +22,8 @@ public class WorldProviderEndVoid extends WorldProviderEnd
     public static class ChunkProviderEndVoid extends ChunkProviderEnd
     {
         private World world;
+        private WorldGenSpikes spikes = new WorldGenSpikes(0);
+
         public ChunkProviderEndVoid(World world, long seed)
         {
             super(world, seed);
@@ -30,6 +33,17 @@ public class WorldProviderEndVoid extends WorldProviderEnd
         @Override public Chunk loadChunk(int x, int z){ return this.provideChunk(x, z); }
         @Override public void populate(IChunkProvider provider, int x, int z)
         {
+            if (YUNoMakeGoodMap.instance.shouldBeVoid(world))
+            {
+                if (x > -5 && x < 5 && z > -5 && z < 5 && world.rand.nextInt(5) == 0)
+                {
+                    spikes.generate(world, world.rand,
+                            x*16 + world.rand.nextInt(16) + 8,
+                            world.provider.getAverageGroundLevel(),
+                            z*16 + world.rand.nextInt(16) + 8);
+                }
+            }
+
             if (x == 0 && z == 0)
             {
                 EntityDragon dragon = new EntityDragon(world);

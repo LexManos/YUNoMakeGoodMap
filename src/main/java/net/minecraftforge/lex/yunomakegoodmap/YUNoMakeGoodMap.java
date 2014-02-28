@@ -29,6 +29,7 @@ public class YUNoMakeGoodMap
     private VoidWorldType worldType;
     private boolean overrideDefault = false;
     private String platformType = "grass";
+    private boolean generateSpikes = false;
     
     @EventHandler
     public void preinit(FMLPreInitializationEvent event)
@@ -59,6 +60,10 @@ public class YUNoMakeGoodMap
         prop = config.get(CATEGORY_GENERAL, "platformType", platformType);
         prop.comment = "Set the type of platform to create in the overworld, Possible values: 'grass' A single grass block, 'tree' a small oak tree on a grass block.";
         platformType = prop.getString();
+        
+        prop = config.get(CATEGORY_GENERAL, "generateSpikes", generateSpikes);
+        prop.comment = "Set to true to enable generation of the obsidian 'spikes' in the end.";
+        generateSpikes = prop.getBoolean(generateSpikes);
 
 
         if (config.hasChanged())
@@ -95,10 +100,15 @@ public class YUNoMakeGoodMap
         return overrideDefault || world.getWorldInfo().getTerrainType() == worldType;
     }
 
-    public String getPlatformType()
+    public String getPlatformType(World world)
     {
         if (platformType == null) platformType = "grass";
         if (platformType.equalsIgnoreCase("tree")) return "tree";
         return "grass";
+    }
+
+    public boolean shouldGenerateSpikes(World world)
+    {
+        return generateSpikes;
     }
 }

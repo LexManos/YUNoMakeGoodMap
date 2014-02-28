@@ -38,7 +38,7 @@ public class VoidWorldChunkManager extends WorldChunkManager
     private void buildSpawn(World world, int x, int y, int z)
     {
         FMLLog.info("[YUNoMakeGoodMap] Building spawn platform at: %d, %d, %d", x, y, z);
-        String platform = YUNoMakeGoodMap.instance.getPlatformType();
+        String platform = YUNoMakeGoodMap.instance.getPlatformType(world);
         if (platform.equals("tree")) buildTree(world, x, y, z);
         else world.setBlock(x, y, z, Block.grass.blockID);
     }
