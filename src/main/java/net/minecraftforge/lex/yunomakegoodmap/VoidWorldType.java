@@ -21,7 +21,7 @@ public class VoidWorldType extends WorldType
     @Override
     public IChunkProvider getChunkGenerator(World world, String generatorOptions)
     {
-        return new VoidChunkProvider(world);
+        return new ChunkProviderFlatVoid(world);
     }
     
     @Override

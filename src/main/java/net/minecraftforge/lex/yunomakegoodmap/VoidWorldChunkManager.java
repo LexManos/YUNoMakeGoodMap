@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.WorldChunkManager;
@@ -21,7 +20,7 @@ public class VoidWorldChunkManager extends WorldChunkManager
     }
 
     @Override
-    public ChunkPosition findBiomePosition(int x, int z, int range, List biomes, Random rand)
+    public ChunkPosition findBiomePosition(int x, int z, int range, @SuppressWarnings("rawtypes") List biomes, Random rand)
     {
         ChunkPosition ret = super.findBiomePosition(x, z, range, biomes, rand);
         if (x == 0 && z == 0 && !world.getWorldInfo().isInitialized())
@@ -31,10 +30,14 @@ public class VoidWorldChunkManager extends WorldChunkManager
                 ret = new ChunkPosition(0, 0, 0);
             }
 
-            int y = world.provider.getAverageGroundLevel();
-            FMLLog.info("Building spawn platform at: %d, %d, %d", ret.x, y, ret.z);
-            world.setBlock(ret.x, y, ret.z, Block.grass.blockID);
+            buildSpawn(world, ret.x, world.provider.getAverageGroundLevel(), ret.z);
         }
         return ret;
+    }
+
+    private void buildSpawn(World world, int x, int y, int z)
+    {
+        FMLLog.info("[YUNoMakeGoodMap] Building spawn platform at: %d, %d, %d", x, y, z);
+        world.setBlock(x, y, z, Block.grass.blockID);
     }
 }
