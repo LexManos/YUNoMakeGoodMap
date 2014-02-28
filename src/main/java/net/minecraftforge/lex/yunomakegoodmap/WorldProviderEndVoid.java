@@ -1,5 +1,6 @@
 package net.minecraftforge.lex.yunomakegoodmap;
 
+import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -27,7 +28,15 @@ public class WorldProviderEndVoid extends WorldProviderEnd
         }
 
         @Override public Chunk loadChunk(int x, int z){ return this.provideChunk(x, z); }
-        @Override public void populate(IChunkProvider provider, int x, int z){}
+        @Override public void populate(IChunkProvider provider, int x, int z)
+        {
+            if (x == 0 && z == 0)
+            {
+                EntityDragon dragon = new EntityDragon(world);
+                dragon.setLocationAndAngles(0.0D, 128.0D, 0.0D, world.rand.nextFloat() * 360.0F, 0.0F);
+                world.spawnEntityInWorld(dragon);
+            }
+        }
 
         @Override public Chunk provideChunk(int x, int z)
         {
