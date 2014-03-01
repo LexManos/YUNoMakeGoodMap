@@ -17,6 +17,8 @@ public class SkyBlock21 implements IPlatformGenerator
     {
         if (world.provider.dimensionId == 0)
             generateOverworld(world, x, y, z);
+        else if (world.provider.dimensionId == -1)
+            generateNether(world, x, y, z);
     }
 
     private void generateOverworld(World world, int x, int y, int z)
@@ -44,6 +46,8 @@ public class SkyBlock21 implements IPlatformGenerator
         TileEntityChest chest = (TileEntityChest)world.getBlockTileEntity(x + 4, y + 3, z);
         chest.setInventorySlotContents(0, new ItemStack(Item.bucketLava));
         chest.setInventorySlotContents(1, new ItemStack(Block.ice));
+        chest.setInventorySlotContents(2, new ItemStack(Block.obsidian));
+        chest.setInventorySlotContents(3, new ItemStack(Item.flintAndSteel));
 
         //Main Tree:
         for (int i = -2; i < 3; i++)
@@ -84,6 +88,45 @@ public class SkyBlock21 implements IPlatformGenerator
                 for (int k = 0; k < 3; k++)
                     world.setBlock(x - 66 - i, y + 0 + j, z + 2 + k, Block.sand.blockID, 0, 2);
         
+        world.scheduledUpdatesAreImmediate = false;
+    }
+
+    private void generateNether(World world, int x, int y, int z)
+    {
+        world.scheduledUpdatesAreImmediate = true;
+        
+        for (int i = -1; i < 2; i++)
+            for (int j = 0; j < 3; j++)
+                for (int k = -1; k < 2; k++)
+                    world.setBlock(x + i, y - 1 + j, z + k, Block.glowStone.blockID);
+
+        world.setBlock(x + 1, y + 2, z - 1, Block.chest.blockID);
+        //world.setBlockMetadataWithNotify(x + 1, y + 2, z - 1, 5, 3); // For some reason this doesn't rotate the chest u.u        
+        TileEntityChest chest = (TileEntityChest)world.getBlockTileEntity(x + 1, y + 2, z - 1);
+        chest.setInventorySlotContents(0, new ItemStack(Block.sapling, 1, 2));
+        chest.setInventorySlotContents(1, new ItemStack(Block.reed));
+        chest.setInventorySlotContents(2, new ItemStack(Block.ice));
+
+        world.setBlock(x + 1, y + 2, z,     Block.mushroomBrown.blockID, 0, 2);
+        world.setBlock(x - 1, y + 2, z + 1, Block.mushroomRed.blockID, 0, 2);
+
+        //Portal Frame
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                if ((i == 0 || i == 3) && (j == 0 || j == 4)) continue;
+                if ((i == 1 || i == 2) && (j >  0 && j <  4)) continue;
+                world.setBlock(x + 2, y + 1 + j, z - 1 + i, Block.obsidian.blockID);
+            }
+        }
+        for (int j = 0; j < 3; j++)
+        {
+            world.setBlock(x + 2, y + 2 + j, z + 0, Block.portal.blockID, 0, 2);
+            world.setBlock(x + 2, y + 2 + j, z + 1, Block.portal.blockID, 0, 2);
+        }
+        //world.setBlock(x + 2, y + 2, z, Block.fire.blockID); //This *should* light the portal?
+        //for (int i = 0; i < 4; i++) world.setBlock(world, x, y, z, Block.obsidian
         world.scheduledUpdatesAreImmediate = false;
     }
 }

@@ -16,7 +16,10 @@ import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldType;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.lex.yunomakegoodmap.generators.*;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
@@ -89,6 +92,8 @@ public class YUNoMakeGoodMap
         generators.put("grass", new SingleBlockPlatform(Block.grass));
         generators.put("tree", new TreePlatform());
         generators.put("skyblock21", new SkyBlock21());
+
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @EventHandler
@@ -112,6 +117,12 @@ public class YUNoMakeGoodMap
         providers.put(-1, WorldProviderHellVoid.class);
         providers.put(0,  WorldProviderSurfaceVoid.class);
         providers.put(1,  WorldProviderEndVoid.class);
+    }
+
+    @ForgeSubscribe
+    public void onWorldLoad(WorldEvent.Load event)
+    {
+        
     }
 
     public boolean shouldBeVoid(World world)
