@@ -16,9 +16,9 @@ public class SkyBlock21 implements IPlatformGenerator
     public void generate(World world, int x, int y, int z)
     {
         if (world.provider.dimensionId == 0)
-            generateOverworld(world, x, y, z);
+            generateOverworld(world, x, y - 3, z);
         else if (world.provider.dimensionId == -1)
-            generateNether(world, x, y, z);
+            generateNether(world, x - 3, y, z);
     }
 
     private void generateOverworld(World world, int x, int y, int z)
@@ -46,8 +46,6 @@ public class SkyBlock21 implements IPlatformGenerator
         TileEntityChest chest = (TileEntityChest)world.getBlockTileEntity(x + 4, y + 3, z);
         chest.setInventorySlotContents(0, new ItemStack(Item.bucketLava));
         chest.setInventorySlotContents(1, new ItemStack(Block.ice));
-        chest.setInventorySlotContents(2, new ItemStack(Block.obsidian));
-        chest.setInventorySlotContents(3, new ItemStack(Item.flintAndSteel));
 
         //Main Tree:
         for (int i = -2; i < 3; i++)
@@ -125,8 +123,6 @@ public class SkyBlock21 implements IPlatformGenerator
             world.setBlock(x + 2, y + 2 + j, z + 0, Block.portal.blockID, 0, 2);
             world.setBlock(x + 2, y + 2 + j, z + 1, Block.portal.blockID, 0, 2);
         }
-        //world.setBlock(x + 2, y + 2, z, Block.fire.blockID); //This *should* light the portal?
-        //for (int i = 0; i < 4; i++) world.setBlock(world, x, y, z, Block.obsidian
         world.scheduledUpdatesAreImmediate = false;
     }
 }

@@ -13,6 +13,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.DimensionManager;
@@ -122,7 +123,16 @@ public class YUNoMakeGoodMap
     @ForgeSubscribe
     public void onWorldLoad(WorldEvent.Load event)
     {
-        
+        //Load a 3x3 around spawn to make sure that it populates and calls our hooks.
+        if (!event.world.isRemote && event.world instanceof WorldServer)
+        {
+            WorldServer world = (WorldServer)event.world;
+            int spawnX = (int)(event.world.getWorldInfo().getSpawnX() / world.provider.getMovementFactor() / 16);
+            int spawnZ = (int)(event.world.getWorldInfo().getSpawnZ() / world.provider.getMovementFactor() / 16);
+            for (int x = -1; x <= 1; x++)
+                for (int z = -1; z <= 1; z++)
+                    world.theChunkProviderServer.loadChunk(spawnX + x, spawnZ + z);
+        }
     }
 
     public boolean shouldBeVoid(World world)
