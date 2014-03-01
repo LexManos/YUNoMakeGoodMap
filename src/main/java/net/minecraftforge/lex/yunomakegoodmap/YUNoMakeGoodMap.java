@@ -4,14 +4,20 @@ import static net.minecraftforge.common.Configuration.CATEGORY_GENERAL;
 
 import java.io.File;
 import java.util.Hashtable;
+import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 
+import com.google.common.collect.Maps;
+
+import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldType;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.Property;
+import net.minecraftforge.lex.yunomakegoodmap.generators.*;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -31,6 +37,7 @@ public class YUNoMakeGoodMap
     private String platformType = "grass";
     private boolean generateSpikes = false;
     private boolean generateNetherFortress = false;
+    private Map<String, IPlatformGenerator> generators = Maps.newHashMap();
     
     @EventHandler
     public void preinit(FMLPreInitializationEvent event)
@@ -59,7 +66,10 @@ public class YUNoMakeGoodMap
         overrideDefault = prop.getBoolean(overrideDefault);
 
         prop = config.get(CATEGORY_GENERAL, "platformType", platformType);
-        prop.comment = "Set the type of platform to create in the overworld, Possible values: 'grass' A single grass block, 'tree' a small oak tree on a grass block.";
+        prop.comment = "Set the type of platform to create in the overworld, Possible values: \n" + 
+                       "  'grass' A single grass block\n" +
+                       "  'tree' a small oak tree on a grass block\n" +
+                       "  'skyblock21' For SkyBlock v2.1 platforms";
         platformType = prop.getString();
         
         prop = config.get(CATEGORY_GENERAL, "generateSpikes", generateSpikes);
@@ -75,6 +85,10 @@ public class YUNoMakeGoodMap
         {
             config.save();
         }
+
+        generators.put("grass", new SingleBlockPlatform(Block.grass));
+        generators.put("tree", new TreePlatform());
+        generators.put("skyblock21", new SkyBlock21());
     }
 
     @EventHandler
@@ -105,11 +119,16 @@ public class YUNoMakeGoodMap
         return overrideDefault || world.getWorldInfo().getTerrainType() == worldType;
     }
 
-    public String getPlatformType(World world)
+    public IPlatformGenerator getPlatformType(World world)
     {
         if (platformType == null) platformType = "grass";
-        if (platformType.equalsIgnoreCase("tree")) return "tree";
-        return "grass";
+        IPlatformGenerator ret = generators.get(platformType.toLowerCase(Locale.ENGLISH));
+        if (ret == null)
+        {
+            platformType = "grass";
+            ret = generators.get(platformType);
+        }
+        return ret;
     }
 
     public boolean shouldGenerateSpikes(World world)
