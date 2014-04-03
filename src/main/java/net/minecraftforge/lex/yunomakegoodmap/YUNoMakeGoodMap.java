@@ -31,7 +31,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
-@Mod(modid = "YUNoMakeGoodMap", name = "YUNoMakeGoodMap", version = "3.0")
+@Mod(modid = "YUNoMakeGoodMap", name = "YUNoMakeGoodMap", version = "3.0", dependencies = "after: BiomesOPlenty")
 public class YUNoMakeGoodMap 
 {
     @Instance("YUNoMakeGoodMap")
