@@ -1,9 +1,18 @@
-/.gradle/
-/build/
-/eclipse/
+## gradle
+/.gradle
+/build
+
+## ForgeGradle
+/run
+
+## eclipse
+/.settings
+/.metadata
+/.classpath
+/.project
 /bin
-/.settings/
-.project
-.classpath
-/repo/
-/run/
+
+## intellij
+/out
+/.idea
+/*.iml
