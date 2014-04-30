@@ -16,6 +16,6 @@ public class SingleBlockPlatform implements IPlatformGenerator
     public void generate(World world, int x, int y, int z)
     {
         if (world.provider.dimensionId == 0)
-            world.setBlock(x, y, z, block.blockID);
+            world.setBlock(x, y, z, block);
     }
 }

@@ -1,25 +1,23 @@
 package net.minecraftforge.lex.yunomakegoodmap;
 
-import static net.minecraftforge.common.Configuration.CATEGORY_GENERAL;
+import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
 
 import com.google.common.collect.Maps;
 
-import net.minecraft.block.Block;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldType;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Property;
-import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.lex.yunomakegoodmap.generators.*;
 import cpw.mods.fml.common.FMLLog;
@@ -30,8 +28,9 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import org.apache.logging.log4j.Level;
 
-@Mod(modid = "YUNoMakeGoodMap", name = "YUNoMakeGoodMap", version = "3.0", dependencies = "after: BiomesOPlenty")
+@Mod(modid = "YUNoMakeGoodMap", name = "YUNoMakeGoodMap", dependencies = "after: BiomesOPlenty")
 public class YUNoMakeGoodMap 
 {
     @Instance("YUNoMakeGoodMap")
@@ -90,7 +89,7 @@ public class YUNoMakeGoodMap
             config.save();
         }
 
-        generators.put("grass", new SingleBlockPlatform(Block.grass));
+        generators.put("grass", new SingleBlockPlatform(Blocks.grass));
         generators.put("tree", new TreePlatform());
         generators.put("skyblock21", new SkyBlock21());
 
@@ -104,15 +103,7 @@ public class YUNoMakeGoodMap
         FMLLog.log(Level.INFO, "YUNoMakeGoodMap Initalized");
         LanguageRegistry.instance().addStringLocalization("generator.void", "Void World");
 
-        for (int x = 0; x < WorldType.worldTypes.length; x++)
-        {
-            if (WorldType.worldTypes[x] == null)
-            {
-                FMLLog.log(Level.INFO, "YUNoMakeGoodMap Type ID: %d", x);
-                worldType = new VoidWorldType(x);
-                break;
-            }
-        }
+        worldType = new VoidWorldType();
 
         Hashtable<Integer, Class<? extends WorldProvider>> providers = ReflectionHelper.getPrivateValue(DimensionManager.class, null, "providers");
         providers.put(-1, WorldProviderHellVoid.class);
@@ -120,7 +111,7 @@ public class YUNoMakeGoodMap
         providers.put(1,  WorldProviderEndVoid.class);
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event)
     {
         //Load a 3x3 around spawn to make sure that it populates and calls our hooks.

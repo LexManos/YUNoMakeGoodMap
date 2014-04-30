@@ -1,6 +1,8 @@
 package net.minecraftforge.lex.yunomakegoodmap;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -22,7 +24,7 @@ public class WorldProviderEndVoid extends WorldProviderEnd
     public static class ChunkProviderEndVoid extends ChunkProviderEnd
     {
         private World world;
-        private WorldGenSpikes spikes = new WorldGenSpikes(0);
+        private WorldGenSpikes spikes = new WorldGenSpikes(Blocks.end_stone);
 
         public ChunkProviderEndVoid(World world, long seed)
         {
@@ -54,7 +56,7 @@ public class WorldProviderEndVoid extends WorldProviderEnd
 
         @Override public Chunk provideChunk(int x, int z)
         {
-            Chunk ret = new Chunk(world, new byte[32768], x, z);
+            Chunk ret = new Chunk(world, new Block[32768], x, z);
             BiomeGenBase[] biomes = world.getWorldChunkManager().loadBlockGeneratorData(null, x * 16, z * 16, 16, 16);
             byte[] ids = ret.getBiomeArray();
 
