@@ -7,9 +7,9 @@ import net.minecraft.world.chunk.IChunkProvider;
 
 public class VoidWorldType extends WorldType
 {
-    public VoidWorldType(int id)
+    public VoidWorldType()
     {
-        super(id, "void");
+        super("void");
     }
 
     @Override

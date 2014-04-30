@@ -30,7 +30,7 @@ public class VoidWorldChunkManager extends WorldChunkManager
                 ret = new ChunkPosition(0, 0, 0);
             }
 
-            buildSpawn(world, ret.x, world.provider.getAverageGroundLevel(), ret.z);
+            buildSpawn(world, ret.chunkPosX, world.provider.getAverageGroundLevel(), ret.chunkPosZ);
         }
         return ret;
     }

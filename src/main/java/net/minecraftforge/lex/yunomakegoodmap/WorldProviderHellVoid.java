@@ -1,8 +1,10 @@
 package net.minecraftforge.lex.yunomakegoodmap;
 
 import java.lang.reflect.Field;
+import java.util.Random;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderHell;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -54,10 +56,10 @@ public class WorldProviderHellVoid extends WorldProviderHell
         @Override
         public Chunk provideChunk(int x, int z)
         {
-            byte[] data =  new byte[32768];
+            Block[] data =  new Block[32768];
 
             if (YUNoMakeGoodMap.instance.shouldGenerateNetherFortress(world))
-                genNetherBridge.generate(this, world, x, z, data);
+                genNetherBridge.func_151539_a(this, world, x, z, data);
             else
             {
                 try
