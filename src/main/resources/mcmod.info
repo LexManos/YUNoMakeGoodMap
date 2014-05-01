@@ -3,11 +3,11 @@
   "modid": "YUNoMakeGoodMap",
   "name": "YUNoMakeGoodMap",
   "description": "Adds a new World Type option to generate nothing except for a inital spawn platform, useful for creative players who want to make Skyblock style maps. 2.0 reduces the spawn zone to 1 block, 2.1 is updated to 1.5.2 and srg names, *should* never need a update again ;)",
-  "version": "{version}",
-  "mcversion": "{mcversion}",
-  "url": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://files.minecraftforge.net/YUNoMakeGoodMap/",
   "updateUrl": "",
-  "authors": [
+  "authorList": [
     "LexManos"
   ],
   "credits": "By LexManos, based on the idea of SkyBlock maps, and at request of FTB team for 1.2.5",
