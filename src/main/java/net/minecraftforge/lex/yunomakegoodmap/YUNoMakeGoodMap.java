@@ -87,7 +87,6 @@ public class YUNoMakeGoodMap
         prop.comment = "Set to true if you want to enable HEE compatibility by disabling YUNoMakeGoodMap's End changes. Requires 'overrideDefault' to be enabled.";
         disableOverrideEnd = prop.getBoolean();
 
-
         if (config.hasChanged())
         {
             config.save();
