@@ -3,11 +3,11 @@ package net.minecraftforge.lex.yunomakegoodmap;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.world.ChunkPosition;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.WorldChunkManager;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.lex.yunomakegoodmap.generators.IPlatformGenerator;
-import cpw.mods.fml.common.FMLLog;
 
 public class VoidWorldChunkManager extends WorldChunkManager
 {
@@ -20,25 +20,25 @@ public class VoidWorldChunkManager extends WorldChunkManager
     }
 
     @Override
-    public ChunkPosition findBiomePosition(int x, int z, int range, @SuppressWarnings("rawtypes") List biomes, Random rand)
+    public BlockPos findBiomePosition(int x, int z, int range, @SuppressWarnings("rawtypes") List biomes, Random rand)
     {
-        ChunkPosition ret = super.findBiomePosition(x, z, range, biomes, rand);
+        BlockPos ret = super.findBiomePosition(x, z, range, biomes, rand);
         if (x == 0 && z == 0 && !world.getWorldInfo().isInitialized())
         {
             if (ret == null)
             {
-                ret = new ChunkPosition(0, 0, 0);
+                ret = BlockPos.ORIGIN;
             }
 
-            buildSpawn(world, ret.chunkPosX, world.provider.getAverageGroundLevel(), ret.chunkPosZ);
+            buildSpawn(world, new BlockPos(ret.getX(), world.provider.getAverageGroundLevel(), ret.getZ()));
         }
         return ret;
     }
 
-    private void buildSpawn(World world, int x, int y, int z)
+    private void buildSpawn(World world, BlockPos pos)
     {
-        FMLLog.info("[YUNoMakeGoodMap] Building spawn platform at: %d, %d, %d", x, y, z);
+        FMLLog.info("[YUNoMakeGoodMap] Building spawn platform at: %d, %d, %d", pos.getX(), pos.getY(), pos.getZ());
         IPlatformGenerator platform = YUNoMakeGoodMap.instance.getPlatformType(world);
-        platform.generate(world, x, y, z);
+        platform.generate(world, pos);
     }
 }

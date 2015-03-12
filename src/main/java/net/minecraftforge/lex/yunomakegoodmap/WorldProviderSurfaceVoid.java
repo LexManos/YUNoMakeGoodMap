@@ -1,6 +1,6 @@
 package net.minecraftforge.lex.yunomakegoodmap;
 
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.WorldProviderSurface;
 import net.minecraft.world.chunk.IChunkProvider;
 
@@ -15,12 +15,12 @@ public class WorldProviderSurfaceVoid extends WorldProviderSurface
     }
 
     @Override
-    public ChunkCoordinates getRandomizedSpawnPoint()
+    public BlockPos getRandomizedSpawnPoint()
     {
         if (YUNoMakeGoodMap.instance.shouldBeVoid(worldObj))
         {
-            ChunkCoordinates spawn = new ChunkCoordinates(worldObj.getSpawnPoint());
-            spawn.posY = worldObj.getTopSolidOrLiquidBlock(spawn.posX, spawn.posZ);
+            BlockPos spawn = new BlockPos(worldObj.getSpawnPoint());
+            spawn = worldObj.getTopSolidOrLiquidBlock(spawn);
             return spawn;
         }
         else
@@ -43,6 +43,6 @@ public class WorldProviderSurfaceVoid extends WorldProviderSurface
     {
         if (YUNoMakeGoodMap.instance.shouldBeVoid(worldObj))
             return new ChunkProviderFlatVoid(worldObj);
-        return terrainType.getChunkGenerator(worldObj, field_82913_c);
+        return terrainType.getChunkGenerator(worldObj, generatorSettings);
     }
 }
