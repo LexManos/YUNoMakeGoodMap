@@ -1,21 +1,22 @@
 package net.minecraftforge.lex.yunomakegoodmap.generators;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 public class SingleBlockPlatform implements IPlatformGenerator
 {
-    private Block block;
+    private IBlockState state;
 
-    public SingleBlockPlatform(Block block)
+    public SingleBlockPlatform(IBlockState state)
     {
-        this.block = block;
+        this.state = state;
     }
 
     @Override
-    public void generate(World world, int x, int y, int z)
+    public void generate(World world, BlockPos pos)
     {
-        if (world.provider.dimensionId == 0)
-            world.setBlock(x, y, z, block);
+        if (world.provider.getDimensionId() == 0)
+            world.setBlockState(pos, state);
     }
 }

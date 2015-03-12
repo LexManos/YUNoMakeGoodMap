@@ -1,24 +1,25 @@
 package net.minecraftforge.lex.yunomakegoodmap.generators;
 
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 public class TreePlatform implements IPlatformGenerator
 {
 
     @Override
-    public void generate(World world, int x, int y, int z)
+    public void generate(World world, BlockPos pos)
     {
-        if (world.provider.dimensionId == 0)
-            buildTree(world, x, y, z);
+        if (world.provider.getDimensionId() == 0)
+            buildTree(world, pos);
     }
 
-    private void buildTree(World world, int x, int y, int z)
+    private void buildTree(World world, BlockPos pos)
     {
-        world.setBlock(x, y, z, Blocks.grass);
-        world.setBlock(x, y + 6, z, Blocks.leaves);
+        world.setBlockState(pos, Blocks.dirt.getDefaultState());
+        world.setBlockState(pos.up(6), Blocks.leaves.getDefaultState());
         for (int i = 1; i <= 5; i++)
-            world.setBlock(x, y + i, z, Blocks.log);
+            world.setBlockState(pos.up(i), Blocks.log.getDefaultState());
         for (int k = 3; k <= 5; k++)
         {
             int width = (k == 5 ? 1 : 2);
@@ -27,7 +28,7 @@ public class TreePlatform implements IPlatformGenerator
                 for (int j = -width; j <= width; j++)
                 {
                     if (i != 0 || j != 0)
-                        world.setBlock(x + i, y + k, z + j, Blocks.leaves);
+                        world.setBlockState(pos.add(i, k, j), Blocks.leaves.getDefaultState());
                 }
             }
         }
