@@ -39,6 +39,7 @@ public class YUNoMakeGoodMap
     private String platformType = "grass";
     private boolean generateSpikes = false;
     private boolean generateNetherFortress = false;
+    private boolean disableOverrideEnd = false;
     private Map<String, IPlatformGenerator> generators = Maps.newHashMap();
     
     @EventHandler
@@ -82,6 +83,9 @@ public class YUNoMakeGoodMap
         prop.comment = "Set to true to enable generation of the nether fortresses.";
         generateNetherFortress = prop.getBoolean(generateNetherFortress);
 
+        prop = config.get(CATEGORY_GENERAL, "disableOverrideEnd", disableOverrideEnd);
+        prop.comment = "Set to true if you want to enable HEE compatibility by disabling YUNoMakeGoodMap's End changes. Requires 'overrideDefault' to be enabled.";
+        disableOverrideEnd = prop.getBoolean();
 
         if (config.hasChanged())
         {
@@ -104,7 +108,8 @@ public class YUNoMakeGoodMap
         Hashtable<Integer, Class<? extends WorldProvider>> providers = ReflectionHelper.getPrivateValue(DimensionManager.class, null, "providers");
         providers.put(-1, WorldProviderHellVoid.class);
         providers.put(0,  WorldProviderSurfaceVoid.class);
-        providers.put(1,  WorldProviderEndVoid.class);
+        if (!disableOverrideEnd)
+            providers.put(1,  WorldProviderEndVoid.class);
     }
 
     @SubscribeEvent
