@@ -26,7 +26,7 @@ configurations { deployJars }
 
 apply plugin: 'forge'
 
-version = "1.7.10-4.0.0"
+version = "1.7.10-4.1.0"
 group= "net.minecraftforge.lex"
 archivesBaseName = "YUNoMakeGoodMap"
 ext.build_number = "${System.getenv().BUILD_NUMBER}"
