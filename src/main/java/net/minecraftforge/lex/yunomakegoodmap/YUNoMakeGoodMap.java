@@ -39,6 +39,8 @@ public class YUNoMakeGoodMap
     private String platformType = "grass";
     private boolean generateSpikes = false;
     private boolean generateNetherFortress = false;
+    private boolean populateNether = true;
+    private boolean populateEnd = true;
     private Map<String, IPlatformGenerator> generators = Maps.newHashMap();
     
     @EventHandler
@@ -82,6 +84,13 @@ public class YUNoMakeGoodMap
         prop.comment = "Set to true to enable generation of the nether fortresses.";
         generateNetherFortress = prop.getBoolean(generateNetherFortress);
 
+        prop = config.get(CATEGORY_GENERAL, "populateNether", populateNether);
+        prop.comment = "Set to true to enable normal generation of The Nether.  If set to true then generateNetherFortress is ignored.";
+        populateNether = prop.getBoolean(populateNether);
+
+        prop = config.get(CATEGORY_GENERAL, "populateEnd", populateEnd);
+        prop.comment = "Set to true to enable normal generation of The End.";
+        populateEnd = prop.getBoolean(populateEnd);
 
         if (config.hasChanged())
         {
@@ -102,9 +111,14 @@ public class YUNoMakeGoodMap
         worldType = new VoidWorldType();
 
         Hashtable<Integer, Class<? extends WorldProvider>> providers = ReflectionHelper.getPrivateValue(DimensionManager.class, null, "providers");
-        providers.put(-1, WorldProviderHellVoid.class);
+
+		if (!populateNether)
+	        providers.put(-1, WorldProviderHellVoid.class);
+
         providers.put(0,  WorldProviderSurfaceVoid.class);
-        providers.put(1,  WorldProviderEndVoid.class);
+
+		if (!populateEnd)
+	        providers.put(1,  WorldProviderEndVoid.class);
     }
 
     @SubscribeEvent
@@ -146,6 +160,10 @@ public class YUNoMakeGoodMap
 
     public boolean shouldGenerateNetherFortress(World world)
     {
+		// don't bother doing anything with fortresses if nether is set to vanilla generation
+		if (populateNether)
+			return false;
+
         return generateNetherFortress;
     }
 }
