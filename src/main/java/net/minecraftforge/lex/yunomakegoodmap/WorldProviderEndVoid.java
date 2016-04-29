@@ -2,39 +2,39 @@ package net.minecraftforge.lex.yunomakegoodmap;
 
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderEnd;
 import net.minecraft.world.gen.feature.WorldGenSpikes;
 
 public class WorldProviderEndVoid extends WorldProviderEnd
 {
-
-    public IChunkProvider createChunkGenerator()
+    @Override
+    public IChunkGenerator createChunkGenerator()
     {
         if (YUNoMakeGoodMap.instance.shouldBeVoid(worldObj))
-            return new ChunkProviderEndVoid(worldObj, worldObj.getSeed());
-        return new ChunkProviderEnd(worldObj, worldObj.getSeed());
+            return new ChunkProviderEndVoid(worldObj, this.worldObj.getWorldInfo().isMapFeaturesEnabled(), worldObj.getSeed());
+        return new ChunkProviderEnd(worldObj, this.worldObj.getWorldInfo().isMapFeaturesEnabled(), worldObj.getSeed());
     }
 
     public static class ChunkProviderEndVoid extends ChunkProviderEnd
     {
         private World world;
-        private WorldGenSpikes spikes = new WorldGenSpikes(Blocks.air);
+        private WorldGenSpikes spikes = new WorldGenSpikes(/* Blocks.AIR */);
 
-        public ChunkProviderEndVoid(World world, long seed)
+        public ChunkProviderEndVoid(World world, boolean mapFeaturesEnabled, long seed)
         {
-            super(world, seed);
+            super(world, mapFeaturesEnabled, seed);
             this.world = world;
         }
 
-        @Override public Chunk provideChunk(BlockPos pos){ return this.provideChunk(pos.getX() >> 4, pos.getZ() >> 4); }
-        @Override public void populate(IChunkProvider provider, int x, int z)
+        @Override public void populate(int x, int z)
         {
             if (YUNoMakeGoodMap.instance.shouldBeVoid(world))
             {
@@ -58,12 +58,12 @@ public class WorldProviderEndVoid extends WorldProviderEnd
         @Override public Chunk provideChunk(int x, int z)
         {
             Chunk ret = new Chunk(world, new ChunkPrimer(), x, z);
-            BiomeGenBase[] biomes = world.getWorldChunkManager().loadBlockGeneratorData(null, x * 16, z * 16, 16, 16);
+            BiomeGenBase[] biomes = world.getBiomeProvider().loadBlockGeneratorData(null, x * 16, z * 16, 16, 16);
             byte[] ids = ret.getBiomeArray();
 
             for (int i = 0; i < ids.length; ++i)
             {
-                ids[i] = (byte)biomes[i].biomeID;
+                ids[i] = (byte)BiomeGenBase.getIdForBiome(biomes[i]);
             }
 
             ret.generateSkylightMap();

@@ -3,24 +3,25 @@ package net.minecraftforge.lex.yunomakegoodmap;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.WorldChunkManager;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.BiomeProvider;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.lex.yunomakegoodmap.generators.IPlatformGenerator;
 
-public class VoidWorldChunkManager extends WorldChunkManager
+public class VoidWorldBiomeProvider extends BiomeProvider
 {
     private World world;
     
-    public VoidWorldChunkManager(World world)
+    public VoidWorldBiomeProvider(World world)
     {
-        super(world);
+        super();
         this.world = world;
     }
 
     @Override
-    public BlockPos findBiomePosition(int x, int z, int range, @SuppressWarnings("rawtypes") List biomes, Random rand)
+    public BlockPos findBiomePosition(int x, int z, int range, List<BiomeGenBase> biomes, Random rand)
     {
         BlockPos ret = super.findBiomePosition(x, z, range, biomes, rand);
         if (x == 0 && z == 0 && !world.getWorldInfo().isInitialized())
