@@ -1,7 +1,8 @@
 package net.minecraftforge.lex.yunomakegoodmap;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldProviderSurface;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 
 public class WorldProviderSurfaceVoid extends WorldProviderSurface
@@ -30,16 +31,16 @@ public class WorldProviderSurfaceVoid extends WorldProviderSurface
     }
 
     @Override
-    protected void registerWorldChunkManager()
+    protected void createBiomeProvider()
     {
         if (YUNoMakeGoodMap.instance.shouldBeVoid(worldObj))
-            worldChunkMgr = new VoidWorldChunkManager(worldObj);
+            biomeProvider = new VoidWorldBiomeProvider(worldObj);
         else
-            worldChunkMgr = terrainType.getChunkManager(worldObj);
+            biomeProvider = terrainType.getBiomeProvider(worldObj);
     }
 
     @Override
-    public IChunkProvider createChunkGenerator()
+    public IChunkGenerator createChunkGenerator()
     {
         if (YUNoMakeGoodMap.instance.shouldBeVoid(worldObj))
             return new ChunkProviderFlatVoid(worldObj);

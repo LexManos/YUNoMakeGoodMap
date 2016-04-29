@@ -64,22 +64,22 @@ public class YUNoMakeGoodMap
         Property prop;
 
         prop = config.get(CATEGORY_GENERAL, "overrideDefault", overrideDefault);
-        prop.comment = "Set to true to force the default world types to be void world. Use with caution.";
+        prop.setComment("Set to true to force the default world types to be void world. Use with caution.");
         overrideDefault = prop.getBoolean(overrideDefault);
 
         prop = config.get(CATEGORY_GENERAL, "platformType", platformType);
-        prop.comment = "Set the type of platform to create in the overworld, Possible values: \n" + 
+        prop.setComment("Set the type of platform to create in the overworld, Possible values: \n" +
                        "  'grass' A single grass block\n" +
                        "  'tree' a small oak tree on a grass block\n" +
-                       "  'skyblock21' For SkyBlock v2.1 platforms";
+                       "  'skyblock21' For SkyBlock v2.1 platforms");
         platformType = prop.getString();
         
         prop = config.get(CATEGORY_GENERAL, "generateSpikes", generateSpikes);
-        prop.comment = "Set to true to enable generation of the obsidian 'spikes' in the end.";
+        prop.setComment("Set to true to enable generation of the obsidian 'spikes' in the end.");
         generateSpikes = prop.getBoolean(generateSpikes);
         
         prop = config.get(CATEGORY_GENERAL, "generateNetherFortress", generateNetherFortress);
-        prop.comment = "Set to true to enable generation of the nether fortresses.";
+        prop.setComment("Set to true to enable generation of the nether fortresses.");
         generateNetherFortress = prop.getBoolean(generateNetherFortress);
 
 
@@ -88,7 +88,7 @@ public class YUNoMakeGoodMap
             config.save();
         }
 
-        generators.put("grass", new SingleBlockPlatform(Blocks.grass.getDefaultState()));
+        generators.put("grass", new SingleBlockPlatform(Blocks.GRASS.getDefaultState()));
         generators.put("tree", new TreePlatform());
         generators.put("skyblock21", new SkyBlock21());
 
@@ -111,14 +111,14 @@ public class YUNoMakeGoodMap
     public void onWorldLoad(WorldEvent.Load event)
     {
         //Load a 3x3 around spawn to make sure that it populates and calls our hooks.
-        if (!event.world.isRemote && event.world instanceof WorldServer)
+        if (!event.getWorld().isRemote && event.getWorld() instanceof WorldServer)
         {
-            WorldServer world = (WorldServer)event.world;
-            int spawnX = (int)(event.world.getWorldInfo().getSpawnX() / world.provider.getMovementFactor() / 16);
-            int spawnZ = (int)(event.world.getWorldInfo().getSpawnZ() / world.provider.getMovementFactor() / 16);
+            WorldServer world = (WorldServer)event.getWorld();
+            int spawnX = (int)(event.getWorld().getWorldInfo().getSpawnX() / world.provider.getMovementFactor() / 16);
+            int spawnZ = (int)(event.getWorld().getWorldInfo().getSpawnZ() / world.provider.getMovementFactor() / 16);
             for (int x = -1; x <= 1; x++)
                 for (int z = -1; z <= 1; z++)
-                    world.theChunkProviderServer.loadChunk(spawnX + x, spawnZ + z);
+                    world.getChunkProvider().loadChunk(spawnX + x, spawnZ + z);
         }
     }
 

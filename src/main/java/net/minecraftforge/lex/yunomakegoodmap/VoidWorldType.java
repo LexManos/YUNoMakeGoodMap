@@ -1,9 +1,10 @@
 package net.minecraftforge.lex.yunomakegoodmap;
 
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
-import net.minecraft.world.biome.WorldChunkManager;
-import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.biome.BiomeProvider;
+import net.minecraft.world.chunk.IChunkGenerator;
 
 public class VoidWorldType extends WorldType
 {
@@ -13,19 +14,19 @@ public class VoidWorldType extends WorldType
     }
 
     @Override
-    public WorldChunkManager getChunkManager(World world)
+    public BiomeProvider getBiomeProvider(World world)
     {
-        return new VoidWorldChunkManager(world);
+        return new VoidWorldBiomeProvider(world);
     }
 
     @Override
-    public IChunkProvider getChunkGenerator(World world, String generatorOptions)
+    public IChunkGenerator getChunkGenerator(World world, String generatorOptions)
     {
         return new ChunkProviderFlatVoid(world);
     }
     
     @Override
-    public int getSpawnFuzz()
+    public int getSpawnFuzz(WorldServer world, net.minecraft.server.MinecraftServer server)
     {
     	return 1;
     }
