@@ -1,69 +1,87 @@
 package net.minecraftforge.lex.yunomakegoodmap;
 
-import net.minecraft.entity.boss.EntityDragon;
+import java.util.Random;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeEndDecorator;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.gen.ChunkProviderEnd;
 import net.minecraft.world.gen.feature.WorldGenSpikes;
+import net.minecraft.world.gen.structure.MapGenEndCity;
 
 public class WorldProviderEndVoid extends WorldProviderEnd
 {
-
-    public IChunkProvider createChunkGenerator()
+    public IChunkGenerator createChunkGenerator()
     {
         if (YUNoMakeGoodMap.instance.shouldBeVoid(worldObj))
             return new ChunkProviderEndVoid(worldObj, worldObj.getSeed());
-        return new ChunkProviderEnd(worldObj, worldObj.getSeed());
+        return new ChunkProviderEnd(worldObj, true, worldObj.getSeed());
     }
 
     public static class ChunkProviderEndVoid extends ChunkProviderEnd
     {
         private World world;
-        private WorldGenSpikes spikes = new WorldGenSpikes(Blocks.air);
+        private Random endRNG;
+        private WorldGenSpikes spikes = new WorldGenSpikes();
+        private MapGenEndCity endCityGen = new MapGenEndCity(this);
 
         public ChunkProviderEndVoid(World world, long seed)
         {
-            super(world, seed);
+            super(world, false, seed);
             this.world = world;
+            this.endRNG = new Random(seed);
         }
-
-        @Override public Chunk provideChunk(BlockPos pos){ return this.provideChunk(pos.getX() >> 4, pos.getZ() >> 4); }
-        @Override public void populate(IChunkProvider provider, int x, int z)
+        
+        @Override public void populate(int x, int z)
         {
             if (YUNoMakeGoodMap.instance.shouldBeVoid(world))
             {
-                if (x > -5 && x < 5 && z > -5 && z < 5 && world.rand.nextInt(5) == 0)
+                WorldGenSpikes.EndSpike[] aworldgenspikes$endspike = BiomeEndDecorator.getSpikesForWorld(world);
+                
+                for (WorldGenSpikes.EndSpike worldgenspikes$endspike : aworldgenspikes$endspike)
                 {
-                    spikes.generate(world, world.rand, new BlockPos(
-                            x*16 + world.rand.nextInt(16) + 8,
-                            world.provider.getAverageGroundLevel(),
-                            z*16 + world.rand.nextInt(16) + 8));
+                    if (worldgenspikes$endspike.doesStartInChunk(new BlockPos(x*16, 0, z*16)))
+                    {
+                        this.spikes.setSpike(worldgenspikes$endspike);
+                        this.spikes.generate(world, endRNG, new BlockPos(worldgenspikes$endspike.getCenterX(), 45, worldgenspikes$endspike.getCenterZ()));
+                    }
                 }
+            }
+
+            if (YUNoMakeGoodMap.instance.shouldGenerateEndCities(this.world))
+            {
+                this.endCityGen.generateStructure(world, endRNG, new ChunkPos(x, z));
             }
 
             if (x == 0 && z == 0)
             {
-                EntityDragon dragon = new EntityDragon(world);
-                dragon.setLocationAndAngles(0.0D, 128.0D, 0.0D, world.rand.nextFloat() * 360.0F, 0.0F);
-                world.spawnEntityInWorld(dragon);
+            	// Allows exit portal to be placed correctly. DragonFightManager will take over from here...
+            	world.setBlockState(new BlockPos(0, 45, 0), Blocks.END_STONE.getDefaultState());
             }
         }
 
         @Override public Chunk provideChunk(int x, int z)
         {
-            Chunk ret = new Chunk(world, new ChunkPrimer(), x, z);
-            BiomeGenBase[] biomes = world.getWorldChunkManager().loadBlockGeneratorData(null, x * 16, z * 16, 16, 16);
+        	ChunkPrimer primer = new ChunkPrimer();
+
+            if (YUNoMakeGoodMap.instance.shouldGenerateEndCities(this.world))
+            {
+                this.endCityGen.generate(world, x, z, primer);
+            }
+            
+            Chunk ret = new Chunk(world, primer, x, z);
+            Biome[] biomes = world.getBiomeProvider().loadBlockGeneratorData(null, x * 16, z * 16, 16, 16);
             byte[] ids = ret.getBiomeArray();
 
             for (int i = 0; i < ids.length; ++i)
             {
-                ids[i] = (byte)biomes[i].biomeID;
+                ids[i] = (byte)Biome.getIdForBiome(biomes[i]);
             }
 
             ret.generateSkylightMap();
