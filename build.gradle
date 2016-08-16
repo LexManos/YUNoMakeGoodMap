@@ -27,7 +27,7 @@ configurations { deployJars }
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
-version = "1.10-6.0.0"
+version = "1.10.2-6.0.0"
 group= "net.minecraftforge.lex"
 archivesBaseName = "YUNoMakeGoodMap"
 ext.build_number = "${System.getenv().BUILD_NUMBER}"
@@ -37,7 +37,7 @@ logger.lifecycle "Build: " + build_number
 version += '.' + build_number
 
 minecraft {
-    version = "1.10-12.18.0.1989-1.10.0"
+    version = "1.10.2-12.18.1.2065"
     runDir = 'run'
     mappings = "snapshot_20160518"
 

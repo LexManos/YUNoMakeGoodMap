@@ -25,10 +25,16 @@ public class VoidWorldType extends WorldType
     {
         return new ChunkProviderFlatVoid(world);
     }
-    
+
     @Override
     public int getSpawnFuzz(WorldServer world, MinecraftServer server)
     {
-    	return 1;
+        return 1;
+    }
+
+    @Override
+    public int getMinimumSpawnHeight(World world)
+    {
+        return this == FLAT ? 4 : 64;
     }
 }

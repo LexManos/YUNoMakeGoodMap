@@ -12,3 +12,4 @@
 *.iws
 /out/
 /.idea/
+*.launch
