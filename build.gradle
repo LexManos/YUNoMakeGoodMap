@@ -78,10 +78,9 @@ uploadArchives {
     repositories.mavenDeployer {
         configuration = configurations.deployJars
 
-        if (project.hasProperty("filesmaven")) {
-            logger.info('Publishing to files server')
-            repository(url: project.filesmaven.url) {
-                authentication(userName: project.filesmaven.username, privateKey: project.filesmaven.key)
+        if (project.hasProperty('forgeMavenPassword')) {
+            repository(url: "http://files.minecraftforge.net/maven/manage/upload") {
+                authentication(userName: project.getProperty('forgeMavenUser'), password: project.getProperty('forgeMavenPassword'))
             }
         } else {
             logger.info('Publishing to repo folder')
