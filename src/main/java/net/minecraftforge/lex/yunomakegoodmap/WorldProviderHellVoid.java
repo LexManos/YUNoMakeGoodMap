@@ -65,7 +65,7 @@ public class WorldProviderHellVoid extends WorldProviderHell
                 //genNetherBridge.worldObj = world;
 
             Chunk ret = new Chunk(world, data, x, z);
-            Biome[] biomes = world.getBiomeProvider().loadBlockGeneratorData(null, x * 16, z * 16, 16, 16);
+            Biome[] biomes = world.getBiomeProvider().getBiomes(null, x * 16, z * 16, 16, 16);
             byte[] ids = ret.getBiomeArray();
 
             for (int i = 0; i < ids.length; ++i)

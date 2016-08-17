@@ -76,7 +76,7 @@ public class WorldProviderEndVoid extends WorldProviderEnd
             }
             
             Chunk ret = new Chunk(world, primer, x, z);
-            Biome[] biomes = world.getBiomeProvider().loadBlockGeneratorData(null, x * 16, z * 16, 16, 16);
+            Biome[] biomes = world.getBiomeProvider().getBiomes(null, x * 16, z * 16, 16, 16);
             byte[] ids = ret.getBiomeArray();
 
             for (int i = 0; i < ids.length; ++i)
