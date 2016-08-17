@@ -1,11 +1,15 @@
 package net.minecraftforge.lex.yunomakegoodmap;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiCreateWorld;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.chunk.IChunkGenerator;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class VoidWorldType extends WorldType
 {
@@ -33,8 +37,14 @@ public class VoidWorldType extends WorldType
     }
 
     @Override
-    public int getMinimumSpawnHeight(World world)
+    public boolean isCustomizable()
     {
-        return this == FLAT ? 4 : 64;
+        return true;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void onCustomizeButton(Minecraft mc, GuiCreateWorld guiCreateWorld)
+    {
+        mc.displayGuiScreen(new GuiCustomizeWorld(guiCreateWorld));
     }
 }

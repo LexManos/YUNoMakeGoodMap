@@ -2,9 +2,7 @@ package net.minecraftforge.lex.yunomakegoodmap;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 import java.io.File;
-import java.util.Locale;
 import java.util.Map;
-import net.minecraft.init.Blocks;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -21,10 +19,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.lex.yunomakegoodmap.generators.IPlatformGenerator;
-import net.minecraftforge.lex.yunomakegoodmap.generators.SingleBlockPlatform;
-import net.minecraftforge.lex.yunomakegoodmap.generators.SkyBlock21;
 import net.minecraftforge.lex.yunomakegoodmap.generators.StructureLoader;
-import net.minecraftforge.lex.yunomakegoodmap.generators.TreePlatform;
 import org.apache.logging.log4j.Level;
 import com.google.common.collect.Maps;
 
@@ -42,7 +37,6 @@ public class YUNoMakeGoodMap
     private boolean generateSpikes = false;
     private boolean generateNetherFortress = false;
     private boolean generateEndCities = false;
-    private Map<String, IPlatformGenerator> generators = Maps.newHashMap();
     private File configDir = null;
     private File structDir = null;
 
@@ -84,11 +78,17 @@ public class YUNoMakeGoodMap
 
         prop = config.get(CATEGORY_GENERAL, "platformType", platformType);
         prop.setComment("Set the type of platform to create in the overworld, Possible values: \n" +
-                       "  'grass' A single grass block\n" +
-                       "  'tree' a small oak tree on a grass block\n" +
-                       "  'skyblock21' For SkyBlock v2.1 platforms\n" +
-                       "  'struct:STRUCT_NAME' for custom Structure Files, located in /config/" + NAME +"/structures/\n" +
-                       "    Example: 'struct:COBBLE_GEN' to use /config/" + NAME + "/structures/COBBLE_GEN.nbt");
+                       "  'STRUCT_NAME' for custom Structure Files, located in /config/" + NAME +"/structures/\n" +
+                       "    Example: 'struct:COBBLE_GEN' to use /config/" + NAME + "/structures/COBBLE_GEN.nbt\n" +
+                       "  \n" +
+                       "  Default ones provided with this mod:\n" +
+                       "  'SINGLE_GRASS' A single grass block\n" +
+                       "  'TREE' a small oak tree on a grass block\n" +
+                       "  'SKYBLOCK21' For SkyBlock v2.1 platforms\n" +
+                       "  'COBBLE_GEN' Small platform with a pre-built cobble gen\n" +
+                       "  \n" +
+                       "  Other mods can supply platforms as well just need to specify it by using modid:STRUCT_NAME\n" +
+                       "  Which will try and load /assets/modid/structures/STRUCT_NAME.nbt");
         platformType = prop.getString();
 
         prop = config.get(CATEGORY_GENERAL, "generateSpikes", generateSpikes);
@@ -107,10 +107,6 @@ public class YUNoMakeGoodMap
         {
             config.save();
         }
-
-        generators.put("grass", new SingleBlockPlatform(Blocks.GRASS.getDefaultState()));
-        generators.put("tree", new TreePlatform());
-        generators.put("skyblock21", new SkyBlock21());
 
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -151,20 +147,15 @@ public class YUNoMakeGoodMap
 
     public IPlatformGenerator getPlatformType(World world)
     {
-        if (platformType == null) platformType = "grass";
+        if (platformType == null) platformType = "SINGLE_GRASS";
 
-        IPlatformGenerator ret = null;
-        if (platformType.startsWith("struct:"))
-            ret = new StructureLoader(this.structDir, platformType.substring(7));
-        else
-            ret = generators.get(platformType.toLowerCase(Locale.ENGLISH));
+        //Backwards compatibility:
+             if (platformType.equals("grass"))       platformType = "SINGLE_GRASS";
+        else if (platformType.equals("tree"))        platformType = "TREE";
+        else if (platformType.equals("skyblock21"))  platformType = "SKYBLOCK21";
+        else if (platformType.startsWith("struct:")) platformType =  platformType.substring(7);
 
-        if (ret == null)
-        {
-            platformType = "grass";
-            ret = generators.get(platformType);
-        }
-        return ret;
+        return new StructureLoader(this.structDir, platformType);
     }
 
     public boolean shouldGenerateSpikes(World world)
@@ -180,5 +171,10 @@ public class YUNoMakeGoodMap
     public boolean shouldGenerateEndCities(World world)
     {
         return generateEndCities;
+    }
+
+    public File getStructFolder()
+    {
+        return this.structDir;
     }
 }

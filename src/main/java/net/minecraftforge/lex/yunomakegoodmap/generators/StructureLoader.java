@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 
 import org.apache.commons.compress.utils.IOUtils;
 
+import com.google.common.base.Strings;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,10 +38,12 @@ public class StructureLoader implements IPlatformGenerator
         this.fileName = fileName;
     }
 
-    private Template loadTemplate(String name, WorldServer world)
+    private Template loadTemplate(ResourceLocation loc, WorldServer world, boolean allowNull)
     {
-        File file = new File(this.baseDir, name + ".nbt");
-        if (file.exists())
+        boolean config = "/config/".equals(loc.getResourceDomain());
+        File file = new File(this.baseDir, loc.getResourcePath() + ".nbt");
+
+        if (config && file.exists())
         {
             try
             {
@@ -48,20 +52,19 @@ public class StructureLoader implements IPlatformGenerator
             catch (FileNotFoundException e) //literally cant happen but whatever..
             {
                 e.printStackTrace();
-                return getDefault(world);
+                return allowNull ? null : getDefault(world);
             }
         }
         else
         {
-
-            ResourceLocation res = new ResourceLocation(name.indexOf(':') != -1 ? name : YUNoMakeGoodMap.MODID + ":" + name);
+            ResourceLocation res = config ? new ResourceLocation(YUNoMakeGoodMap.MODID + ":" + loc.getResourcePath()) : loc;
             Template ret = loadTemplate(StructureLoader.class.getResourceAsStream("/assets/" + res.getResourceDomain() + "/structures/" + res.getResourcePath() + ".nbt")); //We're on the server we don't have Resource Packs.
             if (ret != null)
                 return ret;
 
             //Cant find it, lets load the one shipped with this mod.
             (new FileNotFoundException(file.toString())).printStackTrace();
-            return getDefault(world);
+            return allowNull ? null : getDefault(world);
         }
     }
 
@@ -140,7 +143,12 @@ public class StructureLoader implements IPlatformGenerator
     public void generate(World world, BlockPos pos)
     {
         PlacementSettings settings = new PlacementSettings();
-        Template temp = loadTemplate(this.fileName, (WorldServer)world);
+        Template temp = null;
+        String opts = world.getWorldInfo().getGeneratorOptions();
+        if (!Strings.isNullOrEmpty(opts))
+            temp = loadTemplate(new ResourceLocation(opts), (WorldServer)world, true);
+        if (temp == null)
+            temp = loadTemplate(new ResourceLocation("/config/", this.fileName), (WorldServer)world, false);
 
         BlockPos spawn = findSpawn(temp, settings);
         if (spawn != null)
