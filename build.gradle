@@ -71,7 +71,7 @@ jar
 }
 
 uploadArchives {
-    dependsOn reobf // This is important it is needed to actually cause reobf to run!
+    dependsOn build // This is important it is needed to actually cause reobf to run!
     repositories {
         add getProject().repositories.mavenLocal()
     }
