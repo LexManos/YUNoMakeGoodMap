@@ -21,6 +21,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -131,6 +132,12 @@ public class YUNoMakeGoodMap
         DimensionManager.registerDimension(-1, DimensionType.register("Nether", "_nether", -1, WorldProviderHellVoid.class, false));
         DimensionManager.registerDimension(0,  DimensionType.register("Overworld", "", 0, WorldProviderSurfaceVoid.class, true));
         DimensionManager.registerDimension(1,  DimensionType.register("The End", "_end", 1, WorldProviderEndVoid.class, false));
+    }
+
+    @EventHandler
+    public void serverStart(FMLServerStartingEvent event)
+    {
+        event.registerServerCommand(new PlatformCommand());
     }
 
     @SubscribeEvent
