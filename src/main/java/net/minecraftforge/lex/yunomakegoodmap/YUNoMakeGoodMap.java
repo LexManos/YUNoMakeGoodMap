@@ -2,10 +2,14 @@ package net.minecraftforge.lex.yunomakegoodmap;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 import java.io.File;
-import java.util.Map;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiCreateWorld;
+import net.minecraft.client.gui.GuiWorldSelection;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -18,10 +22,12 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.lex.yunomakegoodmap.generators.IPlatformGenerator;
 import net.minecraftforge.lex.yunomakegoodmap.generators.StructureLoader;
 import org.apache.logging.log4j.Level;
-import com.google.common.collect.Maps;
 
 @Mod(modid = YUNoMakeGoodMap.MODID, name = YUNoMakeGoodMap.NAME, version = "@MOD_VERSION@", dependencies = "after: BiomesOPlenty")
 public class YUNoMakeGoodMap
@@ -43,6 +49,8 @@ public class YUNoMakeGoodMap
     @EventHandler
     public void preinit(FMLPreInitializationEvent event)
     {
+        MinecraftForge.EVENT_BUS.register(this);
+
         Configuration config = null;
 
         this.configDir = new File(event.getModConfigurationDirectory(), NAME);
@@ -176,5 +184,19 @@ public class YUNoMakeGoodMap
     public File getStructFolder()
     {
         return this.structDir;
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT) //Modders should never do this, im just lazy, and I KNOW what im doing.
+    public void onOpenGui(GuiOpenEvent e)
+    {
+        //If we're opening the new world screen from the world selection, default to void world.
+        if (e.getGui() instanceof GuiCreateWorld && Minecraft.getMinecraft().currentScreen instanceof GuiWorldSelection)
+        {
+            //Auto-select void world.
+            GuiCreateWorld cw = (GuiCreateWorld)e.getGui();
+            ReflectionHelper.setPrivateValue(GuiCreateWorld.class, cw, worldType.getWorldTypeID(),
+                    "field_146331_K", "selectedIndex");
+        }
     }
 }

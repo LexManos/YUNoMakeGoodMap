@@ -37,13 +37,13 @@ public class WorldProviderEndVoid extends WorldProviderEnd
             this.world = world;
             this.endRNG = new Random(seed);
         }
-        
+
         @Override public void populate(int x, int z)
         {
             if (YUNoMakeGoodMap.instance.shouldBeVoid(world))
             {
                 WorldGenSpikes.EndSpike[] aworldgenspikes$endspike = BiomeEndDecorator.getSpikesForWorld(world);
-                
+
                 for (WorldGenSpikes.EndSpike worldgenspikes$endspike : aworldgenspikes$endspike)
                 {
                     if (worldgenspikes$endspike.doesStartInChunk(new BlockPos(x*16, 0, z*16)))
@@ -61,20 +61,20 @@ public class WorldProviderEndVoid extends WorldProviderEnd
 
             if (x == 0 && z == 0)
             {
-            	// Allows exit portal to be placed correctly. DragonFightManager will take over from here...
-            	world.setBlockState(new BlockPos(0, 45, 0), Blocks.END_STONE.getDefaultState());
+                // Allows exit portal to be placed correctly. DragonFightManager will take over from here...
+                world.setBlockState(new BlockPos(0, 45, 0), Blocks.END_STONE.getDefaultState());
             }
         }
 
         @Override public Chunk provideChunk(int x, int z)
         {
-        	ChunkPrimer primer = new ChunkPrimer();
+            ChunkPrimer primer = new ChunkPrimer();
 
             if (YUNoMakeGoodMap.instance.shouldGenerateEndCities(this.world))
             {
                 this.endCityGen.generate(world, x, z, primer);
             }
-            
+
             Chunk ret = new Chunk(world, primer, x, z);
             Biome[] biomes = world.getBiomeProvider().getBiomes(null, x * 16, z * 16, 16, 16);
             byte[] ids = ret.getBiomeArray();
