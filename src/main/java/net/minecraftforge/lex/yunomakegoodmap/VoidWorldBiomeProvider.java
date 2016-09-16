@@ -9,11 +9,11 @@ import net.minecraft.world.biome.BiomeProvider;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.lex.yunomakegoodmap.generators.IPlatformGenerator;
 
-public class VoidWorldChunkManager extends BiomeProvider
+public class VoidWorldBiomeProvider extends BiomeProvider
 {
     private World world;
     
-    public VoidWorldChunkManager(World world)
+    public VoidWorldBiomeProvider(World world)
     {
         super(world.getWorldInfo());
         this.world = world;

@@ -22,17 +22,20 @@ public class StructureLoader implements IPlatformGenerator
         this.fileName = fileName;
     }
 
-
     @Override
     public void generate(World world, BlockPos pos)
     {
         PlacementSettings settings = new PlacementSettings();
         Template temp = null;
-        String opts = world.getWorldInfo().getGeneratorOptions();
+        String suffix = world.provider.getDimensionType().getSuffix();
+        String opts = world.getWorldInfo().getGeneratorOptions() + suffix;
+
         if (!Strings.isNullOrEmpty(opts))
             temp = StructureUtil.loadTemplate(new ResourceLocation(opts), (WorldServer)world, true);
         if (temp == null)
-            temp = StructureUtil.loadTemplate(new ResourceLocation("/config/", this.fileName), (WorldServer)world, false);
+            temp = StructureUtil.loadTemplate(new ResourceLocation("/config/", this.fileName + suffix), (WorldServer)world, !Strings.isNullOrEmpty(suffix));
+        if (temp == null)
+            return; //If we're not in the overworld, and we don't have a template...
 
         BlockPos spawn = StructureUtil.findSpawn(temp, settings);
         if (spawn != null)

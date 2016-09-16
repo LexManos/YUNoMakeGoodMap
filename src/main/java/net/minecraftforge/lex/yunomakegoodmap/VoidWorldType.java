@@ -21,7 +21,7 @@ public class VoidWorldType extends WorldType
     @Override
     public BiomeProvider getBiomeProvider(World world)
     {
-        return new VoidWorldChunkManager(world);
+        return new VoidWorldBiomeProvider(world);
     }
 
     @Override

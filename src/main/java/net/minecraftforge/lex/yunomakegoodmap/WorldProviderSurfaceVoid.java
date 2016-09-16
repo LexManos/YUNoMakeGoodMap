@@ -33,7 +33,7 @@ public class WorldProviderSurfaceVoid extends WorldProviderSurface
     protected void createBiomeProvider()
     {
         if (YUNoMakeGoodMap.instance.shouldBeVoid(worldObj))
-            biomeProvider = new VoidWorldChunkManager(worldObj);
+            biomeProvider = new VoidWorldBiomeProvider(worldObj);
         else
             super.createBiomeProvider();
     }

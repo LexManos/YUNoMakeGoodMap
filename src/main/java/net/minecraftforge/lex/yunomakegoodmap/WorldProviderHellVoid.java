@@ -16,6 +16,7 @@ import net.minecraftforge.event.terraingen.TerrainGen;
 
 public class WorldProviderHellVoid extends WorldProviderHell
 {
+    @Override
     public IChunkGenerator createChunkGenerator()
     {
         if (YUNoMakeGoodMap.instance.shouldBeVoid(worldObj))
@@ -28,7 +29,6 @@ public class WorldProviderHellVoid extends WorldProviderHell
     {
         private World world;
         private Random hellRNG;
-        private MapGenNetherBridge genNetherBridge = new MapGenNetherBridge();
 
         public ChunkProviderHellVoid(World world, boolean shouldGenNetherFortress, long seed)
         {
@@ -37,7 +37,7 @@ public class WorldProviderHellVoid extends WorldProviderHell
             this.hellRNG = new Random(seed);
             this.genNetherBridge = (MapGenNetherBridge)TerrainGen.getModdedMapGen(genNetherBridge, InitMapGenEvent.EventType.NETHER_BRIDGE);
         }
-        
+
         @Override
         public void populate(int x, int z)
         {
@@ -61,8 +61,8 @@ public class WorldProviderHellVoid extends WorldProviderHell
 
             if(YUNoMakeGoodMap.instance.shouldGenerateNetherFortress(world))
                 genNetherBridge.generate(world, x, z, data);
-            //else
-                //genNetherBridge.worldObj = world;
+            else
+                genNetherBridge.generate(world, x, z, null);
 
             Chunk ret = new Chunk(world, data, x, z);
             Biome[] biomes = world.getBiomeProvider().getBiomes(null, x * 16, z * 16, 16, 16);

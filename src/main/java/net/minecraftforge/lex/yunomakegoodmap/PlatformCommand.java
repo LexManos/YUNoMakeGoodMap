@@ -135,6 +135,7 @@ public class PlatformCommand extends CommandBase
 
             if (args.length >= 3)
             {
+                //TODO: Preview doesnt quite work correctly with rotations....
                 String rot = args[2].toLowerCase(Locale.ENGLISH);
                 if ("0".equals(rot) || "none".equals(rot))
                     settings.setRotation(Rotation.NONE);

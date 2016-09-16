@@ -71,9 +71,9 @@ public class WorldProviderEndVoid extends WorldProviderEnd
             ChunkPrimer primer = new ChunkPrimer();
 
             if (YUNoMakeGoodMap.instance.shouldGenerateEndCities(this.world))
-            {
                 this.endCityGen.generate(world, x, z, primer);
-            }
+            else
+                this.endCityGen.generate(world, x, z, null);
 
             Chunk ret = new Chunk(world, primer, x, z);
             Biome[] biomes = world.getBiomeProvider().getBiomes(null, x * 16, z * 16, 16, 16);
