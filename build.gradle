@@ -14,6 +14,9 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
+plugins {
+	id 'com.matthewprenger.cursegradle' version '1.0.7'
+}
 
 repositories {
     mavenLocal()
@@ -30,10 +33,12 @@ apply plugin: 'maven'
 version = "1.10.2-6.1.0"
 group= "net.minecraftforge.lex"
 archivesBaseName = "YUNoMakeGoodMap"
+
 ext.build_number = "${System.getenv().BUILD_NUMBER}"
 logger.lifecycle "Build: " + build_number
 if (build_number.toString().equals('null')) build_number = '0'
 logger.lifecycle "Build: " + build_number
+
 version += '.' + build_number
 
 minecraft {
@@ -67,7 +72,20 @@ jar
     {
         attributes 'FMLAT': 'YUNoMakeGoodMap_at.cfg'
     }
-    classifier = 'universal'
+}
+
+curseforge {
+	apiKey = project.hasProperty('curseforge_apikey') ? project.curseforge_apikey : '0'
+	project {
+		id = '252104'
+		//changelog = file('changelog.html')
+		//changelogType = 'html'
+		releaseType = 'beta'
+	}
+}
+
+afterEvaluate {
+	//tasks.curseforge238222.dependsOn.add(makeChangelog)
 }
 
 uploadArchives {
