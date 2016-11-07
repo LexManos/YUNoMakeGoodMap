@@ -109,13 +109,13 @@ public class GuiCustomizeWorld extends GuiScreen
         {
             try
             {
-                for (IResource res : this.mc.getResourceManager().getAllResources(new ResourceLocation(domain, "/structures/SkyBlockPlatforms.txt")))
+                for (IResource res : this.mc.getResourceManager().getAllResources(new ResourceLocation(domain, "structures/SkyBlockPlatforms.txt")))
                 {
                     for (String name : CharStreams.readLines(new InputStreamReader(res.getInputStream())))
                     {
                         try
                         {
-                            if (this.mc.getResourceManager().getResource(new ResourceLocation(domain, "/structures/" + name + ".nbt")) != null)
+                            if (this.mc.getResourceManager().getResource(new ResourceLocation(domain, "structures/" + name + ".nbt")) != null)
                             {
                                 platforms.add(new ResourceLocation(domain, name));
                             }
@@ -221,12 +221,12 @@ public class GuiCustomizeWorld extends GuiScreen
 
         try
         {
-            IResource ir = this.mc.getResourceManager().getResource(new ResourceLocation(res.getResourceDomain(), "/structures/" + res.getResourcePath() + ".json"));
+            IResource ir = this.mc.getResourceManager().getResource(new ResourceLocation(res.getResourceDomain(), "structures/" + res.getResourcePath() + ".json"));
             ret = GSON.fromJson(new InputStreamReader(ir.getInputStream()), StructInfo.class);
 
             if (ret.logo != null)
             {
-                ir = this.mc.getResourceManager().getResource(new ResourceLocation(res.getResourceDomain(), "/structures/" + ret.logo));
+                ir = this.mc.getResourceManager().getResource(new ResourceLocation(res.getResourceDomain(), "structures/" + ret.logo));
                 if (ir != null)
                 {
                     BufferedImage l = ImageIO.read(ir.getInputStream());
