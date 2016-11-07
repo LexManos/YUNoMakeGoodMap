@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map.Entry;
 
-import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.IOUtils;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.CompressedStreamTools;
