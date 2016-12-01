@@ -151,7 +151,7 @@ public class PlatformCommand extends CommandBase
 
             BlockPos pos;
             if (args.length >= 6)
-                pos = CommandBase.parseBlockPos(sender, args, 2, false);
+                pos = CommandBase.parseBlockPos(sender, args, 3, false);
             else if (ent != null)
                 pos = ent.getPosition();
             else
