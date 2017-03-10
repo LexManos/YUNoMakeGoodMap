@@ -3,6 +3,7 @@ package net.minecraftforge.lex.yunomakegoodmap;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -221,17 +222,36 @@ public class GuiCustomizeWorld extends GuiScreen
 
         try
         {
-            IResource ir = this.mc.getResourceManager().getResource(new ResourceLocation(res.getResourceDomain(), "structures/" + res.getResourcePath() + ".json"));
-            ret = GSON.fromJson(new InputStreamReader(ir.getInputStream()), StructInfo.class);
-
-            if (ret.logo != null)
+            if (res.getResourceDomain() == "/config/")
             {
-                ir = this.mc.getResourceManager().getResource(new ResourceLocation(res.getResourceDomain(), "structures/" + ret.logo));
-                if (ir != null)
+                File jsonFile = new File(YUNoMakeGoodMap.instance.getStructFolder(), res.getResourcePath() + ".json");
+                ret = GSON.fromJson(new InputStreamReader(new FileInputStream(jsonFile)), StructInfo.class);
+
+                if (ret.logo != null)
                 {
-                    BufferedImage l = ImageIO.read(ir.getInputStream());
-                    ret.logoPath = this.mc.getTextureManager().getDynamicTextureLocation("platformlogo", new DynamicTexture(l));
-                    ret.logoSize = new Dimension(l.getWidth(), l.getHeight());
+                    File logoFile = new File(YUNoMakeGoodMap.instance.getStructFolder(), ret.logo);
+                    if (logoFile.exists())
+                    {
+                        BufferedImage l = ImageIO.read(new FileInputStream(logoFile));
+                        ret.logoPath = this.mc.getTextureManager().getDynamicTextureLocation("platformlogo", new DynamicTexture(l));
+                        ret.logoSize = new Dimension(l.getWidth(), l.getHeight());
+                    }
+                }
+            }
+            else
+            {
+                IResource ir = this.mc.getResourceManager().getResource(new ResourceLocation(res.getResourceDomain(), "structures/" + res.getResourcePath() + ".json"));
+                ret = GSON.fromJson(new InputStreamReader(ir.getInputStream()), StructInfo.class);
+
+                if (ret.logo != null)
+                {
+                    ir = this.mc.getResourceManager().getResource(new ResourceLocation(res.getResourceDomain(), "structures/" + ret.logo));
+                    if (ir != null)
+                    {
+                        BufferedImage l = ImageIO.read(ir.getInputStream());
+                        ret.logoPath = this.mc.getTextureManager().getDynamicTextureLocation("platformlogo", new DynamicTexture(l));
+                        ret.logoSize = new Dimension(l.getWidth(), l.getHeight());
+                    }
                 }
             }
         }
