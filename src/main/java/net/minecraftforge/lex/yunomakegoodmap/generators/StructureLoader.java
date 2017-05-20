@@ -44,7 +44,7 @@ public class StructureLoader implements IPlatformGenerator
             world.setSpawnPoint(pos);
         }
 
-        temp.func_189962_a(world, pos, settings, 0); //Push to world, with no neighbor notifications!
+        temp.addBlocksToWorld(world, pos, settings, 0); //Push to world, with no neighbor notifications!
         world.getPendingBlockUpdates(new StructureBoundingBox(pos, pos.add(temp.getSize())), true); //Remove block updates, so that sand doesn't fall!
     }
 }

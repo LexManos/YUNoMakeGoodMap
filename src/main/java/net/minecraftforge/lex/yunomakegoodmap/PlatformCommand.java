@@ -39,7 +39,7 @@ public class PlatformCommand extends CommandBase
     private List<ResourceLocation> platforms = Lists.newArrayList();
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "platform";
     }
@@ -51,13 +51,13 @@ public class PlatformCommand extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "command.yunmgm.platform.usage";
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         boolean spawn = "spawn".equalsIgnoreCase(args[0]) || "preview".equalsIgnoreCase(args[0]);
 
@@ -113,21 +113,21 @@ public class PlatformCommand extends CommandBase
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 1)
-            throw new WrongUsageException(getCommandUsage(sender));
+            throw new WrongUsageException(getUsage(sender));
 
         String cmd = args[0].toLowerCase(Locale.ENGLISH);
         if ("list".equals(cmd))
         {
-            sender.addChatMessage(new TextComponentString("Known Platforms:"));
+            sender.sendMessage(new TextComponentString("Known Platforms:"));
             for (ResourceLocation rl : getPlatforms())
             {
-                sender.addChatMessage(new TextComponentString("  " + rl.toString()));
+                sender.sendMessage(new TextComponentString("  " + rl.toString()));
             }
         }
         else if ("spawn".equals(cmd) || "preview".equals(cmd))
         {
             if (args.length < 2)
-                throw new WrongUsageException(getCommandUsage(sender));
+                throw new WrongUsageException(getUsage(sender));
 
             Entity ent = sender.getCommandSenderEntity();
             PlacementSettings settings = new PlacementSettings();
@@ -165,8 +165,8 @@ public class PlatformCommand extends CommandBase
 
             if ("spawn".equals(cmd))
             {
-                sender.addChatMessage(new TextComponentString("Building \"" + args[1] +"\" at " + pos.toString()));
-                temp.func_189962_a(world, pos, settings, 2); //Push to world, with no neighbor notifications!
+                sender.sendMessage(new TextComponentString("Building \"" + args[1] +"\" at " + pos.toString()));
+                temp.addBlocksToWorld(world, pos, settings, 2); //Push to world, with no neighbor notifications!
                 world.getPendingBlockUpdates(new StructureBoundingBox(pos, pos.add(temp.getSize())), true); //Remove block updates, so that sand doesn't fall!
             }
             else
@@ -174,7 +174,7 @@ public class PlatformCommand extends CommandBase
                 BlockPos tpos = pos.down();
                 if (spawn != null)
                     tpos = tpos.add(spawn);
-                sender.addChatMessage(new TextComponentString("Previewing \"" + args[1] +"\" at " + pos.toString()));
+                sender.sendMessage(new TextComponentString("Previewing \"" + args[1] +"\" at " + pos.toString()));
                 world.setBlockState(tpos, Blocks.STRUCTURE_BLOCK.getDefaultState().withProperty(BlockStructure.MODE, TileEntityStructure.Mode.LOAD));
                 TileEntityStructure te = (TileEntityStructure)world.getTileEntity(tpos);
                 if (spawn != null)
@@ -185,6 +185,6 @@ public class PlatformCommand extends CommandBase
             }
         }
         else
-            throw new WrongUsageException(getCommandUsage(sender));
+            throw new WrongUsageException(getUsage(sender));
     }
 }
