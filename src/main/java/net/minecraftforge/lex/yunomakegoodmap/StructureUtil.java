@@ -91,7 +91,7 @@ public class StructureUtil
         nbt.setTag("size", getPosNBT(1, 1, 1));
 
         NBTTagList list = new NBTTagList();
-        list.appendTag(NBTUtil.func_190009_a(new NBTTagCompound(), Blocks.GRASS.getDefaultState()));
+        list.appendTag(NBTUtil.writeBlockState(new NBTTagCompound(), Blocks.GRASS.getDefaultState()));
         nbt.setTag("palette", list);
 
         list = new NBTTagList();
