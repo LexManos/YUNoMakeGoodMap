@@ -19,9 +19,9 @@ public class WorldProviderEndVoid extends WorldProviderEnd
 {
     public IChunkGenerator createChunkGenerator()
     {
-        if (YUNoMakeGoodMap.instance.shouldBeVoid(worldObj))
-            return new ChunkProviderEndVoid(worldObj, worldObj.getSeed());
-        return new ChunkProviderEnd(worldObj, true, worldObj.getSeed());
+        if (YUNoMakeGoodMap.instance.shouldBeVoid(world))
+            return new ChunkProviderEndVoid(world, world.getSeed(), this.getSpawnPoint());
+        return new ChunkProviderEnd(world, true, world.getSeed(), this.getSpawnPoint());
     }
 
     public static class ChunkProviderEndVoid extends ChunkProviderEnd
@@ -31,9 +31,9 @@ public class WorldProviderEndVoid extends WorldProviderEnd
         private WorldGenSpikes spikes = new WorldGenSpikes();
         private MapGenEndCity endCityGen = new MapGenEndCity(this);
 
-        public ChunkProviderEndVoid(World world, long seed)
+        public ChunkProviderEndVoid(World world, long seed, BlockPos spawn)
         {
-            super(world, false, seed);
+            super(world, false, seed, spawn);
             this.world = world;
             this.endRNG = new Random(seed);
         }

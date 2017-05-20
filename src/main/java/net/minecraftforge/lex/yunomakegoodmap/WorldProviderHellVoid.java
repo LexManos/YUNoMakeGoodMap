@@ -19,10 +19,10 @@ public class WorldProviderHellVoid extends WorldProviderHell
     @Override
     public IChunkGenerator createChunkGenerator()
     {
-        if (YUNoMakeGoodMap.instance.shouldBeVoid(worldObj))
-            return new ChunkProviderHellVoid(worldObj, YUNoMakeGoodMap.instance.shouldGenerateNetherFortress(worldObj), worldObj.getSeed());
+        if (YUNoMakeGoodMap.instance.shouldBeVoid(world))
+            return new ChunkProviderHellVoid(world, YUNoMakeGoodMap.instance.shouldGenerateNetherFortress(world), world.getSeed());
 
-        return new ChunkProviderHell(worldObj, YUNoMakeGoodMap.instance.shouldGenerateNetherFortress(worldObj), worldObj.getSeed());
+        return new ChunkProviderHell(world, YUNoMakeGoodMap.instance.shouldGenerateNetherFortress(world), world.getSeed());
     }
 
     public static class ChunkProviderHellVoid extends ChunkProviderHell
