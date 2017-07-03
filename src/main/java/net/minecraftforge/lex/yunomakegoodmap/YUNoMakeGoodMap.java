@@ -202,7 +202,7 @@ public class YUNoMakeGoodMap
         {
             //Auto-select void world.
             GuiCreateWorld cw = (GuiCreateWorld)e.getGui();
-            ReflectionHelper.setPrivateValue(GuiCreateWorld.class, cw, worldType.getWorldTypeID(),
+            ReflectionHelper.setPrivateValue(GuiCreateWorld.class, cw, worldType.getId(),
                     "field_146331_K", "selectedIndex");
         }
     }

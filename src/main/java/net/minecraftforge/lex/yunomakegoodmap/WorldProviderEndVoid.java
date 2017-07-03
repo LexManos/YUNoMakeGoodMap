@@ -10,8 +10,8 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEndDecorator;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.chunk.IChunkGenerator;
-import net.minecraft.world.gen.ChunkProviderEnd;
+import net.minecraft.world.gen.ChunkGeneratorEnd;
+import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.feature.WorldGenSpikes;
 import net.minecraft.world.gen.structure.MapGenEndCity;
 
@@ -20,18 +20,18 @@ public class WorldProviderEndVoid extends WorldProviderEnd
     public IChunkGenerator createChunkGenerator()
     {
         if (YUNoMakeGoodMap.instance.shouldBeVoid(world))
-            return new ChunkProviderEndVoid(world, world.getSeed(), this.getSpawnPoint());
-        return new ChunkProviderEnd(world, true, world.getSeed(), this.getSpawnPoint());
+            return new ChunkGeneratorEndVoid(world, world.getSeed(), this.getSpawnPoint());
+        return new ChunkGeneratorEnd(world, true, world.getSeed(), this.getSpawnPoint());
     }
 
-    public static class ChunkProviderEndVoid extends ChunkProviderEnd
+    public static class ChunkGeneratorEndVoid extends ChunkGeneratorEnd
     {
         private World world;
         private Random endRNG;
         private WorldGenSpikes spikes = new WorldGenSpikes();
         private MapGenEndCity endCityGen = new MapGenEndCity(this);
 
-        public ChunkProviderEndVoid(World world, long seed, BlockPos spawn)
+        public ChunkGeneratorEndVoid(World world, long seed, BlockPos spawn)
         {
             super(world, false, seed, spawn);
             this.world = world;
@@ -66,7 +66,7 @@ public class WorldProviderEndVoid extends WorldProviderEnd
             }
         }
 
-        @Override public Chunk provideChunk(int x, int z)
+        @Override public Chunk generateChunk(int x, int z)
         {
             ChunkPrimer primer = new ChunkPrimer();
 

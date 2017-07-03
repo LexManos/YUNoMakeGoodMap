@@ -8,8 +8,8 @@ import net.minecraft.world.WorldProviderHell;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.chunk.IChunkGenerator;
-import net.minecraft.world.gen.ChunkProviderHell;
+import net.minecraft.world.gen.ChunkGeneratorHell;
+import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.terraingen.TerrainGen;
@@ -20,17 +20,17 @@ public class WorldProviderHellVoid extends WorldProviderHell
     public IChunkGenerator createChunkGenerator()
     {
         if (YUNoMakeGoodMap.instance.shouldBeVoid(world))
-            return new ChunkProviderHellVoid(world, YUNoMakeGoodMap.instance.shouldGenerateNetherFortress(world), world.getSeed());
+            return new ChunkGeneratorHellVoid(world, YUNoMakeGoodMap.instance.shouldGenerateNetherFortress(world), world.getSeed());
 
-        return new ChunkProviderHell(world, YUNoMakeGoodMap.instance.shouldGenerateNetherFortress(world), world.getSeed());
+        return new ChunkGeneratorHell(world, YUNoMakeGoodMap.instance.shouldGenerateNetherFortress(world), world.getSeed());
     }
 
-    public static class ChunkProviderHellVoid extends ChunkProviderHell
+    public static class ChunkGeneratorHellVoid extends ChunkGeneratorHell
     {
         private World world;
         private Random hellRNG;
 
-        public ChunkProviderHellVoid(World world, boolean shouldGenNetherFortress, long seed)
+        public ChunkGeneratorHellVoid(World world, boolean shouldGenNetherFortress, long seed)
         {
             super(world, shouldGenNetherFortress, seed);
             this.world = world;
@@ -55,7 +55,7 @@ public class WorldProviderHellVoid extends WorldProviderHell
         }
 
         @Override
-        public Chunk provideChunk(int x, int z)
+        public Chunk generateChunk(int x, int z)
         {
             ChunkPrimer data = new ChunkPrimer();
 

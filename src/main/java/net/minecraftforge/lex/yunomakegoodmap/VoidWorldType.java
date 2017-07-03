@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.BiomeProvider;
-import net.minecraft.world.chunk.IChunkGenerator;
+import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -27,7 +27,7 @@ public class VoidWorldType extends WorldType
     @Override
     public IChunkGenerator getChunkGenerator(World world, String generatorOptions)
     {
-        return new ChunkProviderFlatVoid(world);
+        return new ChunkGeneratorFlatVoid(world);
     }
 
     @Override
