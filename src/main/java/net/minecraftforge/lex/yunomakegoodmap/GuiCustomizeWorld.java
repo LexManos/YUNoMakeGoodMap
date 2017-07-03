@@ -2,16 +2,15 @@ package net.minecraftforge.lex.yunomakegoodmap;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import org.lwjgl.input.Mouse;
 
 import com.google.common.collect.Lists;
@@ -105,31 +104,25 @@ public class GuiCustomizeWorld extends GuiScreen
     private void collectPlatforms()
     {
         List<ResourceLocation> platforms = this.list.list;
-        for (String domain : this.mc.getResourceManager().getResourceDomains())
+        for (ModContainer mc : Loader.instance().getModList())
         {
+            File src = mc.getSource();
+            if (src == null)
+                continue;
+
+            InputStream is = getClass().getResourceAsStream("/assets/" + mc.getModId() + "/structures/SkyBlockPlatforms.txt");
+            if (is == null)
+                continue;
             try
             {
-                for (IResource res : this.mc.getResourceManager().getAllResources(new ResourceLocation(domain, "structures/SkyBlockPlatforms.txt")))
+                for (String line : CharStreams.readLines(new InputStreamReader(is)))
                 {
-                    for (String name : CharStreams.readLines(new InputStreamReader(res.getInputStream())))
-                    {
-                        try
-                        {
-                            if (this.mc.getResourceManager().getResource(new ResourceLocation(domain, "structures/" + name + ".nbt")) != null)
-                            {
-                                platforms.add(new ResourceLocation(domain, name));
-                            }
-                        }
-                        catch (IOException e)
-                        {
-                            //Ugh wish it had a 'hasResource'
-                        }
-                    }
+                    if (getClass().getResourceAsStream("/assets/" + mc.getModId() + "/structures/" + line + ".nbt") != null)
+                        platforms.add(new ResourceLocation(mc.getModId(), line));
                 }
-            }
-            catch (IOException e)
+            } catch (IOException e)
             {
-                // nom nom nom
+                e.printStackTrace();
             }
         }
 
@@ -221,15 +214,14 @@ public class GuiCustomizeWorld extends GuiScreen
 
         try
         {
-            IResource ir = this.mc.getResourceManager().getResource(new ResourceLocation(res.getResourceDomain(), "structures/" + res.getResourcePath() + ".json"));
-            ret = GSON.fromJson(new InputStreamReader(ir.getInputStream()), StructInfo.class);
+            ret = GSON.fromJson(new InputStreamReader(getClass().getResourceAsStream("/assets/" + res.getResourceDomain() + "/structures/" + res.getResourcePath() + ".json")), StructInfo.class);
 
             if (ret.logo != null)
             {
-                ir = this.mc.getResourceManager().getResource(new ResourceLocation(res.getResourceDomain(), "structures/" + ret.logo));
+                InputStream ir = getClass().getResourceAsStream("/assets/" + res.getResourceDomain() + "/structures/" + ret.logo);
                 if (ir != null)
                 {
-                    BufferedImage l = ImageIO.read(ir.getInputStream());
+                    BufferedImage l = ImageIO.read(ir);
                     ret.logoPath = this.mc.getTextureManager().getDynamicTextureLocation("platformlogo", new DynamicTexture(l));
                     ret.logoSize = new Dimension(l.getWidth(), l.getHeight());
                 }
