@@ -2,7 +2,7 @@ package net.minecraftforge.lex.yunomakegoodmap;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldProviderSurface;
-import net.minecraft.world.chunk.IChunkGenerator;
+import net.minecraft.world.gen.IChunkGenerator;
 
 public class WorldProviderSurfaceVoid extends WorldProviderSurface
 {
@@ -33,7 +33,7 @@ public class WorldProviderSurfaceVoid extends WorldProviderSurface
     public IChunkGenerator createChunkGenerator()
     {
         if (YUNoMakeGoodMap.instance.shouldBeVoid(world))
-            return new ChunkProviderFlatVoid(world);
+            return new ChunkGeneratorFlatVoid(world);
         return super.createChunkGenerator();
     }
 }

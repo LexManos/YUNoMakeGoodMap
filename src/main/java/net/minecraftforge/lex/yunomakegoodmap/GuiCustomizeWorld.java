@@ -26,7 +26,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiUtilRenderComponents;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
@@ -98,7 +98,7 @@ public class GuiCustomizeWorld extends GuiScreen
         if (this.info != null)
             this.info.drawScreen(mouseX, mouseY, partialTicks);
         //this.createFlatWorldListSlotGui.drawScreen(mouseX, mouseY, partialTicks);
-        this.drawCenteredString(this.fontRendererObj, "Select Platform", this.width / 2, 8, 16777215);
+        this.drawCenteredString(this.fontRenderer, "Select Platform", this.width / 2, 8, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
@@ -154,7 +154,7 @@ public class GuiCustomizeWorld extends GuiScreen
         public ScrollList()
         {
             super(GuiCustomizeWorld.this.mc, LIST_WIDTH, GuiCustomizeWorld.this.height,
-                    32, GuiCustomizeWorld.this.height - 68 + 4, 10, GuiCustomizeWorld.this.fontRendererObj.FONT_HEIGHT + 6,
+                    32, GuiCustomizeWorld.this.height - 68 + 4, 10, GuiCustomizeWorld.this.fontRenderer.FONT_HEIGHT + 6,
                     GuiCustomizeWorld.this.width, GuiCustomizeWorld.this.height);
             this.elementClicked(0, false);
         }
@@ -207,7 +207,7 @@ public class GuiCustomizeWorld extends GuiScreen
         {
             ResourceLocation item = list.get(slotIdx);
             StructInfo info = getInfo(item);
-            FontRenderer font = GuiCustomizeWorld.this.fontRendererObj;
+            FontRenderer font = GuiCustomizeWorld.this.fontRenderer;
 
             font.drawString(font.trimStringToWidth(info.name, listWidth - 10), this.left + 3 , slotTop +  2, 0xFF2222);
         }
@@ -301,7 +301,7 @@ public class GuiCustomizeWorld extends GuiScreen
                 }
 
                 ITextComponent chat = ForgeHooks.newChatWithLinks(line, false);
-                ret.addAll(GuiUtilRenderComponents.splitText(chat, this.listWidth-8, GuiCustomizeWorld.this.fontRendererObj, false, true));
+                ret.addAll(GuiUtilRenderComponents.splitText(chat, this.listWidth-8, GuiCustomizeWorld.this.fontRenderer, false, true));
             }
             return ret;
         }
@@ -338,7 +338,7 @@ public class GuiCustomizeWorld extends GuiScreen
             {
                 GlStateManager.enableBlend();
                 GuiCustomizeWorld.this.mc.renderEngine.bindTexture(logoPath);
-                VertexBuffer wr = tess.getBuffer();
+                BufferBuilder wr = tess.getBuffer();
                 int offset = (this.left + this.listWidth/2) - (logoDims.width / 2);
                 wr.begin(7, DefaultVertexFormats.POSITION_TEX);
                 wr.pos(offset,                  top + logoDims.height, zLevel).tex(0, 1).endVertex();
@@ -355,7 +355,7 @@ public class GuiCustomizeWorld extends GuiScreen
                 if (line != null)
                 {
                     GlStateManager.enableBlend();
-                    GuiCustomizeWorld.this.fontRendererObj.drawStringWithShadow(line.getFormattedText(), this.left + 4, top, 0xFFFFFF);
+                    GuiCustomizeWorld.this.fontRenderer.drawStringWithShadow(line.getFormattedText(), this.left + 4, top, 0xFFFFFF);
                     GlStateManager.disableAlpha();
                     GlStateManager.disableBlend();
                 }
@@ -385,7 +385,7 @@ public class GuiCustomizeWorld extends GuiScreen
                 {
                     if (!(part instanceof TextComponentString))
                         continue;
-                    k += GuiCustomizeWorld.this.fontRendererObj.getStringWidth(((TextComponentString)part).getText());
+                    k += GuiCustomizeWorld.this.fontRenderer.getStringWidth(((TextComponentString)part).getText());
                     if (k >= x)
                     {
                         GuiCustomizeWorld.this.handleComponentClick(part);
