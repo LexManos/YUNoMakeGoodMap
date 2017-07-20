@@ -71,7 +71,7 @@ public class PlatformCommand extends CommandBase
         return Collections.<String>emptyList();
     }
 
-    private List<ResourceLocation> getPlatforms()
+    protected List<ResourceLocation> getPlatforms()
     {
         if (platforms.size() == 0)
         {
