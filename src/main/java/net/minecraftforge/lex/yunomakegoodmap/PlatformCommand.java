@@ -81,7 +81,7 @@ public class PlatformCommand extends CommandBase
                 if (src == null)
                     continue;
 
-                InputStream is = getClass().getResourceAsStream("/assets/" + mc.getModId() + "/structures/SkyBlockPlatforms.txt");
+                InputStream is = getClass().getResourceAsStream("/assets/" + mc.getModId() + "/structures/sky_block_platforms.txt");
                 if (is == null)
                     continue;
                 try

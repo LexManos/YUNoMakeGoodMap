@@ -109,7 +109,7 @@ public class GuiCustomizeWorld extends GuiScreen
         {
             try
             {
-                for (IResource res : this.mc.getResourceManager().getAllResources(new ResourceLocation(domain, "structures/SkyBlockPlatforms.txt")))
+                for (IResource res : this.mc.getResourceManager().getAllResources(new ResourceLocation(domain, "structures/sky_block_platforms.txt")))
                 {
                     for (String name : CharStreams.readLines(new InputStreamReader(res.getInputStream())))
                     {
