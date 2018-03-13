@@ -33,7 +33,7 @@ public class VoidWorldType extends WorldType
     @Override
     public int getSpawnFuzz(WorldServer world, MinecraftServer server)
     {
-        return 1;
+        return 0;
     }
 
     @Override

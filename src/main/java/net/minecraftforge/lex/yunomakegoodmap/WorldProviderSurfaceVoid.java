@@ -20,7 +20,8 @@ public class WorldProviderSurfaceVoid extends WorldProviderSurface
         if (YUNoMakeGoodMap.instance.shouldBeVoid(world))
         {
             BlockPos spawn = new BlockPos(world.getSpawnPoint());
-            spawn = world.getTopSolidOrLiquidBlock(spawn);
+            if (!YUNoMakeGoodMap.instance.isExactSpawn())
+                spawn = world.getTopSolidOrLiquidBlock(spawn);
             return spawn;
         }
         else
